@@ -71,15 +71,15 @@ function Explore() {
             <p className="text-sm text-slate-500">No notes yet</p>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {notes.map((note) => (
-              <Link key={note.id} to={`/notes/${note.id}`}>
-                <NoteCard
-                  note={note}
-                  isSaved={savedIds.has(note.id)}
-                  onToggleSave={toggleSave}
-                />
-              </Link>
+              <NoteCard
+                key={note.id}
+                note={note}
+                isSaved={savedIds.has(note.id)}
+                onToggleSave={toggleSave}
+                stretch={1}
+              />
             ))}
           </div>
         )}
@@ -92,7 +92,7 @@ function Explore() {
       <div className="flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable flex-col overflow-y-auto bg-slate-50 p-6">
         <Title
           title="Explore"
-          description="Discover notes made by the community"
+          description="Discover notes made by your school community"
         />
 
         {error && (

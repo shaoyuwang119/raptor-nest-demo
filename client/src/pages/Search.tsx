@@ -116,15 +116,15 @@ function Search() {
             </p>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {results.map((note) => (
-              <Link key={note.id} to={`/notes/${note.id}`}>
-                <NoteCard
-                  note={note}
-                  isSaved={savedIds.has(note.id)}
-                  onToggleSave={toggleSave}
-                />
-              </Link>
+              <NoteCard
+                key={note.id}
+                note={note}
+                isSaved={savedIds.has(note.id)}
+                onToggleSave={toggleSave}
+                stretch={1}
+              />
             ))}
           </div>
         )}

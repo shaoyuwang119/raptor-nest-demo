@@ -2,6 +2,8 @@
 import type { Note } from '@/types'
 import { getCategoryColor } from '@/lib/categoryColors'
 
+import { useSession } from '@/components/auth/ProtectedRoute'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBook,
@@ -18,12 +20,20 @@ import {
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons'
 
 import { formatNoteTime } from '@/lib/formatNoteTime'
+import { Link } from 'react-router-dom'
 
 type NoteCardProps = {
   note: Note
   isSaved: boolean
   onToggleSave: (noteId: number, isSaved: boolean) => void
   authorLabel?: string
+  stretch?: 0 | 1 | 2 // 0 = default, 1 = single, 2 = double
+}
+
+const widths = {
+  0: 'w-md',
+  1: 'w-full',
+  2: 'w-[calc(50%-0.375rem)]',
 }
 
 const icons: Record<string, IconDefinition> = {
@@ -37,7 +47,15 @@ const icons: Record<string, IconDefinition> = {
   Athletic: faPersonSwimming,
 }
 
-function NoteCard({ note, isSaved, onToggleSave, authorLabel }: NoteCardProps) {
+function NoteCard({
+  note,
+  isSaved,
+  onToggleSave,
+  authorLabel,
+  stretch,
+}: NoteCardProps) {
+  const session = useSession()
+  const isOwnNote = note.user_id === session?.user.id
   const icon = (note.subject && icons[note.subject.category]) || faBook
   const color = getCategoryColor(note.subject?.category)
 
@@ -58,8 +76,9 @@ function NoteCard({ note, isSaved, onToggleSave, authorLabel }: NoteCardProps) {
   const displayTime = formatNoteTime(time)
 
   return (
-    <div
-      className={`flex h-20 w-md cursor-pointer flex-col overflow-hidden rounded-lg border border-slate-200 p-2.5 transition-colors duration-200 ${color.hoverBg}`}
+    <Link
+      to={`/notes/${note.id}`}
+      className={`flex h-20 ${widths[stretch || 0]} cursor-pointer flex-col overflow-hidden rounded-lg border border-slate-200 p-2.5 transition-colors duration-200 ${color.hoverBg}`}
     >
       <div className="flex h-full gap-3">
         <div className={`my-1 flex h-full`}>
@@ -68,9 +87,9 @@ function NoteCard({ note, isSaved, onToggleSave, authorLabel }: NoteCardProps) {
             className={`shrink-0 text-xl ${color.text}`}
           />
         </div>
-        <div className="flex h-full flex-1 flex-col">
+        <div className="flex h-full min-w-0 flex-1 flex-col">
           <div className="flex h-full items-start justify-between gap-2">
-            <p className="line-clamp-2 flex h-full items-start font-sans text-sm font-semibold text-slate-800">
+            <p className="line-clamp-2 min-w-0 font-sans text-sm font-semibold text-slate-800">
               {note.title}
             </p>
             <span
@@ -81,8 +100,8 @@ function NoteCard({ note, isSaved, onToggleSave, authorLabel }: NoteCardProps) {
           </div>
           <div className="flex">
             <p className="text-xs font-semibold text-slate-600">
-              {authorLabel ?? note.author}
-              <span className="text-slate-400"> • updated {displayTime}</span>
+              {isOwnNote ? 'You' : (authorLabel ?? note.author)}
+              <span className="text-slate-400"> • {displayTime}</span>
             </p>
 
             <button
@@ -102,7 +121,7 @@ function NoteCard({ note, isSaved, onToggleSave, authorLabel }: NoteCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

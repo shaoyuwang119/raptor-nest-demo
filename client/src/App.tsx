@@ -10,6 +10,7 @@ import {
   NotePage,
   NotFound,
   Profile,
+  Saved,
   Search,
   Settings,
 } from '@/pages'
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       { path: '/explore', element: <Explore /> },
       { path: '/profile', element: <Profile /> },
       { path: '/library', element: <Library /> },
+      { path: '/saved', element: <Saved /> },
       { path: '/notes/:id/edit', element: <NoteEditPage /> },
       { path: '/notes/:id', element: <NotePage /> },
       { path: '/search', element: <Search /> },

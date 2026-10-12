@@ -19,7 +19,7 @@ export function formatNoteTime(date: Date, includeLabel = true): string {
     )
   }
   if (dayDiff === 1) {
-    return 'Yesterday'
+    return 'yesterday'
   }
   return date.toLocaleDateString()
 }

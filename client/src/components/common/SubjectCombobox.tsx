@@ -54,7 +54,7 @@ function SubjectCombobox({
         }}
         placeholder={placeholder}
         className={`w-full rounded-lg border border-slate-300 px-2 py-2 placeholder:text-slate-400 focus:border-slate-300 focus:outline-none ${
-          selected ? 'text-slate-800' : 'text-slate-400'
+          selected ? 'text-slate-800' : 'text-slate-600'
         }`}
       />
 
@@ -76,11 +76,11 @@ function SubjectCombobox({
                     setIsOpen(false)
                     setQuery('')
                   }}
-                  className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100"
+                  className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100"
                 >
                   <span>{s.name}</span>
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${color.bg} ${color.text}`}
+                    className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${color.bg} ${color.text}`}
                   >
                     {s.category}
                   </span>

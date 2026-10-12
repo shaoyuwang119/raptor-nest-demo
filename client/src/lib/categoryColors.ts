@@ -54,7 +54,7 @@ export const CATEGORY_COLORS: Record<string, CategoryColor> = {
     hoverBg: 'hover:bg-cyan-300/10',
     wash: 'bg-cyan-400/8',
   },
-  Elective: {
+  Miscellaneous: {
     bg: 'bg-slate-100',
     text: 'text-slate-700',
     hoverBg: 'hover:bg-slate-300/10',

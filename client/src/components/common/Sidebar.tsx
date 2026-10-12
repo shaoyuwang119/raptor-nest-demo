@@ -10,6 +10,7 @@ import {
   faBookOpen,
   faSun,
   faMoon,
+  faCircleUser,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { supabase } from '@/lib/supabase'
@@ -87,20 +88,22 @@ function Sidebar({ profile }: SidebarProps) {
           }}
           onMouseLeave={() => setIsProfileHovered(false)}
           className={({ isActive }) =>
-            `flex h-10 items-center gap-3 rounded-xl px-1 py-2 text-sm transition-colors duration-200 ${
+            `flex h-10 items-center gap-4 rounded-xl px-2 py-2 text-sm transition-colors duration-200 ${
               isActive
                 ? 'bg-sea-teal-dark font-medium text-white'
                 : 'hover:bg-sea-lavender text-slate-600'
             }`
           }
         >
-          <div className="bg-sea-sky text-sea-teal-dark flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
-            {profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
-          </div>
+          <FontAwesomeIcon
+            size="xl"
+            icon={faCircleUser}
+            className="w-4 shrink-0"
+          />
 
           <div>
             <div
-              className={`-ml-0.5 overflow-hidden whitespace-nowrap transition-opacity duration-100 ${
+              className={`-ml-1 overflow-hidden whitespace-nowrap transition-opacity duration-100 ${
                 isMinimized ? 'opacity-0' : 'opacity-100'
               }`}
             >

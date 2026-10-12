@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Navigate, Outlet, useNavigate } from 'react-router-dom'
+import {
+  Navigate,
+  Outlet,
+  useNavigate,
+  useOutletContext,
+} from 'react-router-dom'
 
 import type { Session } from '@supabase/supabase-js'
 
@@ -9,6 +14,20 @@ import { Sidebar, Header, UploadModal } from '@/components'
 export type Profile = {
   name: string
   email: string
+}
+
+type AuthContext = {
+  session: Session
+  profile: Profile
+}
+
+export function useSession() {
+  return useOutletContext<AuthContext>().session
+}
+
+// name is '' until ProtectedRoute's profiles fetch finishes
+export function useProfile() {
+  return useOutletContext<AuthContext>().profile
 }
 
 // ProtectedRoute ensures that only authenticated users
@@ -43,10 +62,7 @@ export default function ProtectedRoute() {
 
   useEffect(() => {
     async function fetchProfile() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-
+      const user = session?.user
       if (!user) return
 
       const { data } = await supabase
@@ -114,7 +130,7 @@ export default function ProtectedRoute() {
       />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar profile={profile} />
-        <Outlet />
+        <Outlet context={{ session, profile } satisfies AuthContext} />
       </div>
       <UploadModal
         open={showUpload}
