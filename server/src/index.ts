@@ -2,9 +2,10 @@
 import express from 'express'
 import multer from 'multer'
 import { PDFDocument, PDFPage } from 'pdf-lib'
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 import { supabase } from '@/config/supabase'
+import { supabaseAdmin } from './config/supabaseAdmin'
+
 import type { AuthedRequest } from '@/middleware/auth'
 import { requireAuth } from '@/middleware/auth'
 import {
@@ -25,8 +26,8 @@ const PORT = process.env.PORT || 3000 // hosts like Render assign the port dynam
 const FILES_LIMIT = 200
 const MAX_PDF_SIZE = 50 * 1024 * 1024 // applied both per-file (multer) and to the final merged/rebuilt PDF
 
-const TITLE_MAX_LENGTH = 100
-const DESCRIPTION_MAX_LENGTH = 500
+const TITLE_MAX_LENGTH = 70
+const DESCRIPTION_MAX_LENGTH = 1000
 
 console.log(process.env.SUPABASE_URL)
 
@@ -72,6 +73,24 @@ const upload = multer({
 
 const ALLOWED_TYPES = new Set(['application/pdf', 'image/png', 'image/jpeg'])
 
+function limitFields(
+  title: String,
+  description: String,
+  res: express.Response
+) {
+  if (title.length > TITLE_MAX_LENGTH) {
+    return res.status(400).json({
+      error: `Title must be ${TITLE_MAX_LENGTH} characters or fewer`,
+    })
+  }
+
+  if (description && description.length > DESCRIPTION_MAX_LENGTH) {
+    return res.status(400).json({
+      error: `Description must be ${DESCRIPTION_MAX_LENGTH} characters or fewer`,
+    })
+  }
+}
+
 // upload notes route
 app.post(
   '/api/notes',
@@ -81,20 +100,10 @@ app.post(
     const files = req.files as Express.Multer.File[]
     const { title, subject_id, description, author } = req.body
 
+    limitFields(title, description, res)
+
     if (!title || !subject_id) {
       return res.status(400).json({ error: 'Fields missing' })
-    }
-
-    if (title.length > TITLE_MAX_LENGTH) {
-      return res.status(400).json({
-        error: `Title must be ${TITLE_MAX_LENGTH} characters or fewer`,
-      })
-    }
-
-    if (description && description.length > DESCRIPTION_MAX_LENGTH) {
-      return res.status(400).json({
-        error: `Description must be ${DESCRIPTION_MAX_LENGTH} characters or fewer`,
-      })
     }
 
     if (!files || files.length === 0) {
@@ -152,22 +161,19 @@ app.post(
       return res.status(400).json({ error: 'Could not merge files into a PDF' })
     }
 
-    // Act as the requesting user so for Supabase's RLS policies
-    const supabaseClient = getRequestScopedClient(req)
-
     let content_url: string
     try {
       content_url = await uploadPdfToSupabase(
         mergedBytes,
         req.user!.id,
         title,
-        supabaseClient
+        supabaseAdmin
       )
     } catch (err) {
       return res.status(500).json({ error: 'Failed to upload PDF to Supabase' })
     }
 
-    const { data: note, error: noteError } = await supabaseClient
+    const { data: note, error: noteError } = await supabaseAdmin
       .from('notes')
       .insert({
         title,
@@ -197,9 +203,9 @@ app.post(
         previewPng,
         req.user!.id,
         title,
-        supabaseClient
+        supabaseAdmin
       )
-      await supabaseClient
+      await supabaseAdmin
         .from('notes')
         .update({ preview_url })
         .eq('id', note.id)
@@ -227,6 +233,8 @@ app.post(
 
     console.log('Editing note', id, 'and new files', files)
 
+    limitFields(newNoteData.title, newNoteData.description, res)
+
     // `pages` arrives as a JSON string - multipart/form-data fields are
     // always plain strings, so the client stringifies the page order
     let spec: PageSpec[]
@@ -248,10 +256,8 @@ app.post(
         .json({ error: `Unsupported file type: ${invalid.originalname}.` })
     }
 
-    const supabaseClient = getRequestScopedClient(req)
-
     // Fetch note
-    const { data: note, error: noteError } = await supabaseClient
+    const { data: note, error: noteError } = await supabaseAdmin
       .from('notes')
       .select('*')
       .eq('id', id)
@@ -381,14 +387,14 @@ app.post(
         resultBytes,
         req.user!.id,
         note.title,
-        supabaseClient
+        supabaseAdmin
       )
     } catch (err) {
       return res.status(500).json({ error: 'Failed to upload PDF to Supabase' })
     }
 
     // Update the note's row with the new data and urls
-    const { data: updatedNote, error: updateError } = await supabaseClient
+    const { data: updatedNote, error: updateError } = await supabaseAdmin
       .from('notes')
       .update({
         title: newNoteData.title ?? note.title,
@@ -418,9 +424,9 @@ app.post(
         previewPng,
         req.user!.id,
         newNoteData.title,
-        supabaseClient
+        supabaseAdmin
       )
-      await supabaseClient
+      await supabaseAdmin
         .from('notes')
         .update({ preview_url })
         .eq('id', note.id)
@@ -446,9 +452,9 @@ app.patch('/api/notes/:id', requireAuth, async (req: AuthedRequest, res) => {
     return res.status(400).json({ error: 'Fields missing' })
   }
 
-  const supabaseClient = getRequestScopedClient(req)
+  limitFields(title, description, res)
 
-  const { data: note, error: noteError } = await supabaseClient
+  const { data: note, error: noteError } = await supabaseAdmin
     .from('notes')
     .select('user_id')
     .eq('id', id)
@@ -464,7 +470,7 @@ app.patch('/api/notes/:id', requireAuth, async (req: AuthedRequest, res) => {
       .json({ error: 'You do not have permission to edit this note.' })
   }
 
-  const { error } = await supabaseClient
+  const { error } = await supabaseAdmin
     .from('notes')
     .update({
       title,
@@ -484,11 +490,10 @@ app.patch('/api/notes/:id', requireAuth, async (req: AuthedRequest, res) => {
 // Delete a note
 app.delete('/api/notes/:id', requireAuth, async (req: AuthedRequest, res) => {
   const { id } = req.params
-  const supabaseClient = getRequestScopedClient(req)
 
-  const { data: note, error: fetchError } = await supabaseClient
+  const { data: note, error: fetchError } = await supabaseAdmin
     .from('notes')
-    .select('content_url, preview_url')
+    .select('user_id, content_url, preview_url')
     .eq('id', id)
     .single()
 
@@ -496,7 +501,13 @@ app.delete('/api/notes/:id', requireAuth, async (req: AuthedRequest, res) => {
     return res.status(404).json({ error: 'Note not found' })
   }
 
-  const { error: deleteError } = await supabaseClient
+  if (note.user_id !== req.user!.id) {
+    return res
+      .status(403)
+      .json({ error: 'You do not have permission to delete this note.' })
+  }
+
+  const { error: deleteError } = await supabaseAdmin
     .from('notes')
     .delete()
     .eq('id', id)

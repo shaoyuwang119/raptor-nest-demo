@@ -22,10 +22,7 @@
   --font-hand: 'Caveat', 'Fraunces', ui-serif, Georgia, serif;
 }
 
-/* "Gentle Sea Breeze" dark theme - same hue family (navy/teal), inverted
-   lightness. Because the whole app is built from just sea-*, slate-*, and
-   white, redefining those three families here re-themes every component
-   automatically - no component files need dark: classes added. */
+/* Inverted lightness for "Gentle Sea Breeze" dark theme*/
 .dark {
   --color-sea-navy: #eaf6fb;
   --color-sea-teal: #3fb6cc;
