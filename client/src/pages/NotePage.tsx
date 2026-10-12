@@ -266,7 +266,7 @@ function NotePage() {
                         </button>
 
                         {showMenu && (
-                          <div className="absolute right-0 z-10 mt-1 w-36 overflow-hidden rounded-md border border-slate-200 bg-white shadow-lg">
+                          <div className="absolute right-0 z-10 mt-0 w-36 overflow-hidden rounded-md border border-slate-200 bg-white shadow-lg">
                             <button
                               onClick={() => {
                                 setShowMenu(false)

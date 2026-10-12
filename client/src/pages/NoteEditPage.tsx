@@ -653,18 +653,18 @@ function NoteEditPage() {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              maxLength={500}
+              maxLength={1000}
               className="h-full w-full resize-none rounded-lg border border-slate-300 bg-white p-2 text-slate-800 focus:outline-slate-300"
             />
             <span className="pointer-events-none absolute right-3 bottom-2 rounded bg-white/80 px-1 text-xs text-slate-400">
-              {description.length}/500
+              {description.length}/1000
             </span>
           </div>
 
           <div className="flex gap-3">
             <button
               onClick={() => navigate(`/notes/${id}`)}
-              className="cursor-pointer rounded-md border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50"
+              className="cursor-pointer rounded-md border border-slate-300 px-4 py-2 text-sm text-slate-800 hover:bg-slate-50"
             >
               Cancel
             </button>
