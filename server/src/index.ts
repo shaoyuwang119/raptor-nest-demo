@@ -17,6 +17,7 @@ import { renderFirstPageToPng } from '@/utils/generatePreview'
 
 import { scheduleCleanupJob } from '@/jobs/cleanupJob'
 import { deleteNoteFiles } from '@/utils/deleteNoteFiles'
+import { isAdmin } from './utils/isAdmin'
 
 scheduleCleanupJob()
 
@@ -501,7 +502,9 @@ app.delete('/api/notes/:id', requireAuth, async (req: AuthedRequest, res) => {
     return res.status(404).json({ error: 'Note not found' })
   }
 
-  if (note.user_id !== req.user!.id) {
+  const isOwner = note.user_id === req.user!.id
+
+  if (!isOwner && !(await isAdmin(req.user!.id))) {
     return res
       .status(403)
       .json({ error: 'You do not have permission to delete this note.' })
@@ -521,6 +524,11 @@ app.delete('/api/notes/:id', requireAuth, async (req: AuthedRequest, res) => {
   deleteNoteFiles(note.content_url, note.preview_url).catch((err) =>
     console.error('Failed to delete note files:', err)
   )
+})
+
+// Let client know if they are admin
+app.get('/api/me', requireAuth, async (req: AuthedRequest, res) => {
+  res.json({ isAdmin: await isAdmin(req.user!.id) })
 })
 
 // Express recognizes this as an error handler specifically because it

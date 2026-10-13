@@ -14,6 +14,7 @@ import { Sidebar, Header, UploadModal } from '@/components'
 export type Profile = {
   name: string
   email: string
+  isAdmin: boolean
 }
 
 type AuthContext = {
@@ -36,7 +37,11 @@ export default function ProtectedRoute() {
   const navigate = useNavigate()
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
-  const [profile, setProfile] = useState<Profile>({ name: '', email: '' })
+  const [profile, setProfile] = useState<Profile>({
+    name: '',
+    email: '',
+    isAdmin: false,
+  })
   const [showUpload, setShowUpload] = useState(false)
 
   useEffect(() => {
@@ -65,15 +70,22 @@ export default function ProtectedRoute() {
       const user = session?.user
       if (!user) return
 
-      const { data } = await supabase
-        .from('profiles')
-        .select('display_name')
-        .eq('id', user.id)
-        .single()
+      const [{ data }, meRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('display_name')
+          .eq('id', user.id)
+          .single(),
+        fetch(`${import.meta.env.VITE_API_URL}/api/me`, {
+          headers: { Authorization: `Bearer ${session!.access_token}` },
+        }),
+      ])
+      const me = meRes.ok ? await meRes.json() : { isAdmin: false }
 
       setProfile({
         name: data?.display_name || '',
         email: user.email || '',
+        isAdmin: me.isAdmin,
       })
     }
 

@@ -21,6 +21,7 @@ import { usePageTitle } from '@/lib/usePageTitle'
 import { useSavedNotes } from '@/lib/useSavedNotes'
 
 import { formatNoteTime } from '@/lib/formatNoteTime'
+import { useProfile } from '@/components/auth/ProtectedRoute'
 
 type FetchState =
   | { status: 'loading' }
@@ -47,11 +48,18 @@ function NotePage() {
   const { savedIds, toggleSave } = useSavedNotes()
   const [saveCount, setSaveCount] = useState(0)
 
+  const { isAdmin } = useProfile()
+
   usePageTitle(
     state.status === 'ready'
       ? `${state.note.title} | StudyNote`
       : 'Loading... | StudyNote'
   )
+
+  function handleReport() {
+    // TODO: POST /api/notes/:id/report once the reports table exists
+    alert('Sorry, report feature not implemented yet.')
+  }
 
   async function handleDelete() {
     const confirmDelete = window.confirm(
@@ -181,6 +189,8 @@ function NotePage() {
           ? formatNoteTime(new Date(note.updated_at))
           : null
 
+        const isOwner = note.user_id === user?.id
+
         return (
           <div className="flex h-full w-full gap-2">
             {/* PDF viewer on the left */}
@@ -252,21 +262,18 @@ function NotePage() {
                     </button>
 
                     {/* Kebab menu */}
-                    {note.user_id === user?.id && (
-                      <div className="relative" ref={menuRef}>
-                        <button
-                          onClick={() => setShowMenu((prev) => !prev)}
-                          aria-label="Note options"
-                          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
-                        >
-                          <FontAwesomeIcon
-                            icon={faEllipsisVertical}
-                            size="lg"
-                          />
-                        </button>
+                    <div className="relative" ref={menuRef}>
+                      <button
+                        onClick={() => setShowMenu((prev) => !prev)}
+                        aria-label="Note options"
+                        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
+                      >
+                        <FontAwesomeIcon icon={faEllipsisVertical} size="lg" />
+                      </button>
 
-                        {showMenu && (
-                          <div className="absolute right-0 z-10 mt-0 w-36 overflow-hidden rounded-md border border-slate-200 bg-white shadow-lg">
+                      {showMenu && (
+                        <div className="absolute right-0 z-10 mt-0 w-36 overflow-hidden rounded-md border border-slate-200 bg-white shadow-lg">
+                          {isOwner && (
                             <button
                               onClick={() => {
                                 setShowMenu(false)
@@ -276,6 +283,8 @@ function NotePage() {
                             >
                               Edit Note
                             </button>
+                          )}
+                          {(isOwner || isAdmin) && (
                             <button
                               onClick={() => {
                                 setShowMenu(false)
@@ -285,10 +294,21 @@ function NotePage() {
                             >
                               Delete Note
                             </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                          )}
+                          {!isOwner && (
+                            <button
+                              onClick={() => {
+                                setShowMenu(false)
+                                handleReport()
+                              }}
+                              className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-100"
+                            >
+                              Report Note
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

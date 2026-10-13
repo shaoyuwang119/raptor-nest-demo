@@ -11,7 +11,7 @@ export type Note = {
   subject_id: number
   subject?: Subject | null
   description: string
-  author?: string
+  author?: string // display name of the author
   content_url: string
   preview_url?: string
   saves: number
