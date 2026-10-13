@@ -91,8 +91,8 @@ function Search() {
   }, [q, subjectId])
 
   return (
-    <div className="flex min-h-full flex-1">
-      <div className="flex-1 flex-col bg-slate-50 p-6">
+    <div className="flex h-full min-w-0 flex-1">
+      <div className="journal-paper scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable min-w-0 flex-1 overflow-y-auto py-8 pr-8 pl-20">
         <Title
           title={q ? `Results for "${q}"` : 'Search results'}
           description={
@@ -109,9 +109,11 @@ function Search() {
             <Loading />
           </div>
         ) : results.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-16 text-center">
-            <p className="text-sm text-slate-500">Sorry, no notes found</p>
-            <p className="mt-1 text-xs text-slate-400">
+          <div>
+            <p className="font-hand text-xl text-slate-500">
+              sorry, no notes found...
+            </p>
+            <p className="mt-1 text-sm text-slate-400">
               Try a different search term!
             </p>
           </div>

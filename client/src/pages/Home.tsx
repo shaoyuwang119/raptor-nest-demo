@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 import { NoteCard, ErrorDisplay, Loading } from '@/components'
 import { useProfile, useSession } from '@/components/auth/ProtectedRoute'
@@ -13,31 +11,43 @@ import { useSavedNotes } from '@/lib/useSavedNotes'
 import { resolveAuthors } from '@/lib/resolveAuthors'
 import { getCategoryColor } from '@/lib/categoryColors'
 import { formatNoteTime } from '@/lib/formatNoteTime'
-import Title from '@/components/common/Title'
 
-function getGreeting() {
-  const hour = new Date().getHours()
-  if (hour < 12) return 'Good morning'
-  if (hour < 18) return 'Good afternoon'
-  return 'Good evening'
-}
-
-function SectionHeader({ title, to }: { title: string; to?: string }) {
+function SectionHeader({
+  title,
+  note,
+  to,
+}: {
+  title: ReactNode
+  note?: string
+  to?: string
+}) {
   return (
-    <div className="mb-3 flex items-baseline justify-between">
-      <h2 className="font-serif text-xl font-medium text-slate-800">{title}</h2>
+    <div className="mb-4 flex items-baseline gap-3">
+      <h2 className="font-serif text-2xl font-medium text-slate-800">
+        {title}
+      </h2>
+      {note && (
+        <span className="font-hand text-sea-teal -rotate-2 text-xl">
+          {note}
+        </span>
+      )}
       {to && (
         <Link
           to={to}
-          className="hover:text-sea-teal text-sm text-slate-500 transition-colors"
+          className="hover:text-sea-teal font-hand ml-auto text-xl text-slate-500 transition-colors"
         >
-          See all →
+          more ↗
         </Link>
       )}
     </div>
   )
 }
 
+function EmptyNote({ children }: { children: ReactNode }) {
+  return <p className="font-hand text-xl text-slate-500">{children}</p>
+}
+
+// Index card taped to the page, showing the note's first-page preview
 function FeaturedNoteCard({ note }: { note: Note }) {
   const color = getCategoryColor(note.subject?.category)
   const isOwnNote = note.user_id === useSession()?.user.id
@@ -48,24 +58,78 @@ function FeaturedNoteCard({ note }: { note: Note }) {
   return (
     <Link
       to={`/notes/${note.id}`}
-      className={`flex h-43 min-w-0 flex-1 flex-col rounded-lg border border-slate-200 p-4 transition-colors duration-200 ${color.wash} ${color.hoverBg}`}
+      className="relative flex h-43 min-w-0 flex-1 -rotate-[0.6deg] gap-4 rounded-sm bg-white p-3 shadow-[0_1px_2px_rgb(0_0_0/0.08),0_12px_24px_-16px_rgb(0_0_0/0.4)] transition-transform duration-200 hover:rotate-0"
     >
       <span
-        className={`w-fit rounded-md px-3 py-1 text-xs font-medium ${color.bg} ${color.text}`}
+        aria-hidden
+        className="bg-sea-sky/70 absolute -top-2.5 left-1/2 h-5 w-20 -translate-x-1/2 rotate-[-4deg]"
+      />
+      <div
+        className={`h-full w-28 shrink-0 overflow-hidden rounded-sm border border-slate-200 ${color.wash}`}
       >
-        {note.subject?.name}
-      </span>
-      <p className="mt-3 line-clamp-1 font-serif text-xl font-medium text-slate-800">
-        {note.title}
-      </p>
-      <p className="mt-1 line-clamp-2 text-sm text-slate-500">
-        {note.description}
-      </p>
-      <p className="mt-auto text-xs font-semibold text-slate-600">
-        {isOwnNote ? 'You' : note.author}
-        <span className="text-slate-400"> • {displayTime}</span>
-      </p>
+        {note.preview_url && (
+          <img
+            src={note.preview_url}
+            alt=""
+            className="h-full w-full object-cover object-top"
+          />
+        )}
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col py-1">
+        <span
+          className={`w-fit rounded-md px-2.5 py-0.5 text-xs font-medium ${color.bg} ${color.text}`}
+        >
+          {note.subject?.name}
+        </span>
+        <p className="mt-2 line-clamp-2 font-serif text-xl leading-snug font-medium text-slate-800">
+          {note.title}
+        </p>
+        <p className="mt-1 line-clamp-2 text-sm text-slate-500">
+          {note.description}
+        </p>
+        <p className="mt-auto text-xs font-semibold text-slate-600">
+          {isOwnNote ? 'You' : note.author}
+          <span className="text-slate-400"> • {displayTime}</span>
+        </p>
+      </div>
     </Link>
+  )
+}
+
+// Ruled list of entries, like lines in a notebook
+function NoteList({
+  notes,
+  showSaves,
+}: {
+  notes: Note[]
+  showSaves?: boolean
+}) {
+  return (
+    <ul>
+      {notes.map((note) => {
+        const color = getCategoryColor(note.subject?.category)
+        return (
+          <li key={note.id}>
+            <Link
+              to={`/notes/${note.id}`}
+              className="group flex items-baseline gap-3 border-b border-dashed border-slate-300 py-2.5"
+            >
+              <span className="decoration-sea-teal-light min-w-0 truncate font-medium text-slate-800 underline-offset-4 group-hover:underline">
+                {note.title}
+              </span>
+              <span className={`shrink-0 text-xs font-medium ${color.text}`}>
+                {note.subject?.name}
+              </span>
+              <span className="ml-auto shrink-0 text-xs text-slate-400 tabular-nums">
+                {showSaves
+                  ? `★ ${note.saves}`
+                  : formatNoteTime(new Date(note.created_at))}
+              </span>
+            </Link>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 
@@ -147,31 +211,23 @@ function Home() {
     .sort((a, b) => b.created_at.localeCompare(a.created_at))
   const popularNotes = [...notes].sort((a, b) => b.saves - a.saves).slice(0, 8)
 
-  const renderRow = (rowNotes: Note[], emptyMessage: string) =>
-    rowNotes.length === 0 ? (
-      <p className="text-sm text-slate-500">{emptyMessage}</p>
-    ) : (
-      <div className="flex scrollbar-thin scrollbar-thumb-slate-300 gap-3 overflow-x-auto pb-2">
-        {rowNotes.map((note) => (
-          <div key={note.id} className="w-90 shrink-0">
-            <NoteCard
-              note={note}
-              isSaved={savedIds.has(note.id)}
-              onToggleSave={toggleSave}
-              stretch={1}
-            />
-          </div>
-        ))}
-      </div>
-    )
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  })
 
   return (
     <div className="flex h-full min-w-0 flex-1">
-      <div className="min-w-0 flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable flex-col overflow-y-auto bg-slate-50 p-6">
-        <Title
-          title={firstName ? `${getGreeting()}, ${firstName}` : getGreeting()}
-          description="Here's what's going on in your classes."
-        />
+      <div className="journal-paper min-w-0 flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable overflow-y-auto py-8 pr-8 pl-20">
+        <header className="mb-10">
+          <h1 className="font-serif text-4xl font-medium text-slate-800">
+            {today}
+          </h1>
+          <p className="font-hand text-sea-teal mt-1 w-fit -rotate-1 text-2xl">
+            {firstName ? `back at it, ${firstName}` : 'back at it'}
+          </p>
+        </header>
 
         {error && <ErrorDisplay message={error} />}
 
@@ -180,15 +236,20 @@ function Home() {
             <Loading />
           </div>
         ) : (
-          <div className="flex flex-col gap-y-10">
+          <div className="flex flex-col gap-y-12">
             <section>
-              <SectionHeader title="Pick up where you left off" />
+              <SectionHeader
+                title={
+                  <>
+                    <span className="journal-highlight">Last</span> time…
+                  </>
+                }
+                note="↓ where you left off"
+              />
               {recentNotes.length === 0 ? (
-                <p className="text-sm text-slate-500">
-                  Notes you open will show up here.
-                </p>
+                <EmptyNote>notes you open will show up here</EmptyNote>
               ) : (
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   <FeaturedNoteCard note={recentNotes[0]} />
                   <div className="flex min-w-0 flex-1 flex-col gap-3">
                     {recentNotes.slice(1).map((note) => (
@@ -205,69 +266,117 @@ function Home() {
               )}
             </section>
 
-            <section>
-              <SectionHeader title="New in your subjects" to="/explore" />
-              {renderRow(newNotes, 'No new notes in your subjects yet.')}
-            </section>
+            <div className="grid gap-12 xl:grid-cols-2">
+              <section>
+                <SectionHeader
+                  title={
+                    <>
+                      New in <span className="journal-highlight">your</span>{' '}
+                      subjects
+                    </>
+                  }
+                  to="/explore"
+                />
+                {newNotes.length === 0 ? (
+                  <EmptyNote>nothing new in your subjects yet...</EmptyNote>
+                ) : (
+                  <NoteList notes={newNotes.slice(0, 6)} />
+                )}
+              </section>
+
+              <section>
+                <SectionHeader title="Currently popular" to="/explore" />
+                {popularNotes.length === 0 ? (
+                  <EmptyNote>nothing popular yet...</EmptyNote>
+                ) : (
+                  <NoteList notes={popularNotes.slice(0, 6)} showSaves />
+                )}
+              </section>
+            </div>
 
             <section>
-              <SectionHeader title="My saved" to="/saved" />
-              {renderRow(savedNotes, 'Star a note to save it here.')}
-            </section>
-
-            <section>
-              <SectionHeader title="Popular" to="/explore" />
-              {renderRow(popularNotes, 'Nothing popular yet.')}
+              <SectionHeader
+                title={
+                  <>
+                    <span className="journal-highlight">Saved</span> for later
+                  </>
+                }
+                to="/saved"
+              />
+              {savedNotes.length === 0 ? (
+                <EmptyNote>star a note to keep it here ☆</EmptyNote>
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  {savedNotes.slice(0, 4).map((note) => (
+                    <NoteCard
+                      key={note.id}
+                      note={note}
+                      isSaved={savedIds.has(note.id)}
+                      onToggleSave={toggleSave}
+                      stretch={1}
+                    />
+                  ))}
+                </div>
+              )}
             </section>
           </div>
         )}
       </div>
 
-      <aside className="w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-slate-50 px-4 py-6">
-        <h2 className="font-serif text-lg font-medium text-slate-800">
+      <aside className="w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white px-6 py-8">
+        <h2 className="font-serif text-xl font-medium text-slate-800">
           My subjects
         </h2>
+
         {subjects.length === 0 ? (
-          <div className="mt-3 rounded-lg border border-dashed border-slate-300 p-4 text-center">
-            <p className="text-sm text-slate-500">
-              Add your classes to get a feed built around them.
+          <div className="mt-6 space-y-2">
+            <p className="font-hand text-lg leading-snug text-slate-500">
+              no classes yet — add yours to get a personalized feed of notes!
             </p>
             <Link
               to="/profile"
-              className="bg-sea-teal hover:bg-sea-teal-dark mt-3 inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-white transition-colors"
+              className="text-sea-teal text-md mt-2 inline-block font-sans hover:underline"
             >
-              <FontAwesomeIcon icon={faPlus} className="text-xs" />
-              Add subject
+              + add a subject
             </Link>
           </div>
         ) : (
-          <div className="mt-3 flex flex-col gap-1">
-            {subjects.map((subject) => {
-              const color = getCategoryColor(subject.category)
-              return (
-                <Link
-                  key={subject.id}
-                  to={`/search?subject=${subject.id}`}
-                  className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-slate-700 transition-colors hover:bg-slate-100"
-                >
-                  <span
-                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${color.bg}`}
-                  />
-                  <span className="truncate">{subject.name}</span>
-                </Link>
-              )
-            })}
+          <>
+            <ol className="mt-5 flex flex-col">
+              {subjects.map((subject) => {
+                const color = getCategoryColor(subject.category)
+                const count = notes.filter(
+                  (n) => n.subject_id === subject.id
+                ).length
+                return (
+                  <li key={subject.id}>
+                    <Link
+                      to={`/search?subject=${subject.id}`}
+                      className="group flex items-end gap-2 py-1.5 text-sm text-slate-700"
+                    >
+                      <span
+                        className={`h-4 w-1.5 shrink-0 self-center rounded-sm bg-current opacity-70 ${color.text}`}
+                      />
+                      <span className="group-hover:text-sea-teal truncate transition-colors">
+                        {subject.name}
+                      </span>
+                      <span className="mb-1 min-w-4 flex-1 border-b border-dotted border-slate-300" />
+                      <span className="font-sans text-slate-500 tabular-nums">
+                        {count}
+                      </span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ol>
             <Link
               to="/profile"
-              className="hover:text-sea-teal mt-1 flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-slate-500 transition-colors"
+              className="font-hand hover:text-sea-teal mt-3 inline-block text-lg text-slate-500 transition-colors"
             >
-              <FontAwesomeIcon icon={faPlus} className="w-2.5 text-xs" />
-              Add subject
+              + add a subject
             </Link>
-          </div>
+          </>
         )}
-
-        <hr className="my-6 border-slate-200" />
 
         {/* <h2 className="font-serif text-lg font-medium text-slate-800">Clubs</h2> */}
         {/* TODO: list the user's clubs once the club board exists */}

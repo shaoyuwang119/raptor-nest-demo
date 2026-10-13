@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { NoteCard, Title } from '@/components'
+import { NoteCard, Title, ErrorDisplay, Loading } from '@/components'
 import { supabase } from '@/lib/supabase'
 import type { Note } from '@/types'
 import { usePageTitle } from '@/lib/usePageTitle'
@@ -62,14 +62,12 @@ function Explore() {
   function renderSection(title: string, notes: Note[]) {
     console.log(savedIds)
     return (
-      <div className="mb-8">
-        <div className="mb-3 font-serif text-xl font-medium text-slate-800">
-          {title}
-        </div>
+      <section className="mb-12">
+        <h2 className="mb-4 font-serif text-2xl font-medium text-slate-800">
+          <span className="journal-highlight">{title}</span>
+        </h2>
         {notes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-16 text-center">
-            <p className="text-sm text-slate-500">No notes yet</p>
-          </div>
+          <p className="font-hand text-xl text-slate-500">no notes yet...</p>
         ) : (
           <div className="grid grid-cols-2 gap-4">
             {notes.map((note) => (
@@ -83,27 +81,27 @@ function Explore() {
             ))}
           </div>
         )}
-      </div>
+      </section>
     )
   }
 
   return (
-    <div className="flex h-full flex-1">
-      <div className="flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable flex-col overflow-y-auto bg-slate-50 p-6">
+    <div className="flex h-full min-w-0 flex-1">
+      <div className="journal-paper scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable min-w-0 flex-1 overflow-y-auto py-8 pr-8 pl-20">
         <Title
           title="Explore"
           description="Discover notes made by your school community"
         />
 
         {error && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
-            {error}
+          <div className="mb-4">
+            <ErrorDisplay message={error} />
           </div>
         )}
 
         {loading ? (
-          <div className="flex items-center justify-center py-16 text-sm text-slate-400">
-            Loading...
+          <div className="flex items-center justify-center py-16">
+            <Loading />
           </div>
         ) : (
           <>

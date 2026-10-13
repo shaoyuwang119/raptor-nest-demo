@@ -30,8 +30,8 @@ function Library() {
   }
 
   return (
-    <div className="flex h-full flex-1">
-      <div className="flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable flex-col overflow-y-auto bg-slate-50 p-6">
+    <div className="flex h-full min-w-0 flex-1">
+      <div className="journal-paper scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable min-w-0 flex-1 overflow-y-auto py-8 pr-8 pl-20">
         <Title
           title="Library"
           description="Browse notes by subject and category"
@@ -48,8 +48,13 @@ function Library() {
             return (
               <div
                 key={category}
-                className="overflow-hidden rounded-xl border border-slate-200 bg-white"
+                className="journal-card relative overflow-hidden border border-slate-200"
               >
+                {/* Coloured divider tab down the left edge, like a binder divider */}
+                <span
+                  aria-hidden
+                  className={`absolute inset-y-0 left-0 w-1 bg-current opacity-60 ${color.text}`}
+                />
                 <button
                   onClick={() => toggleCategory(category)}
                   className={`flex w-full cursor-pointer items-center justify-between px-4 py-3 text-left transition-colors ${color.wash}`}
@@ -75,8 +80,8 @@ function Library() {
                   <div className="overflow-hidden">
                     <div className="flex flex-wrap gap-2 border-t border-slate-100 p-4">
                       {categorySubjects.length === 0 ? (
-                        <p className="text-sm text-slate-400">
-                          No subjects in this category yet.
+                        <p className="font-hand text-lg text-slate-500">
+                          no subjects in this category yet...
                         </p>
                       ) : (
                         categorySubjects.map((subject) => (
@@ -85,7 +90,7 @@ function Library() {
                             onClick={() =>
                               navigate(`/search?subject=${subject.id}`)
                             }
-                            className={`cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium transition hover:opacity-80 ${color.bg} ${color.text}`}
+                            className={`cursor-pointer rounded-sm px-3 py-1.5 text-sm font-medium transition hover:opacity-80 ${color.bg} ${color.text}`}
                           >
                             {subject.name}
                           </button>

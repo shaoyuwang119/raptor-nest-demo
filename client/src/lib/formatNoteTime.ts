@@ -21,5 +21,9 @@ export function formatNoteTime(date: Date, includeLabel = true): string {
   if (dayDiff === 1) {
     return 'yesterday'
   }
+  // If date is within this year, show month and day. Otherwise, show month, day, and year.
+  if (date.getFullYear() === now.getFullYear()) {
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric' })
+  }
   return date.toLocaleDateString()
 }

@@ -134,26 +134,32 @@ function Profile() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50 p-6">
-      <div className="mx-auto max-w-6xl space-y-6">
+    <div className="journal-paper flex-1 overflow-y-auto py-8 pr-8 pl-20">
+      <div className="max-w-6xl space-y-6">
         {/* Header card: banner + avatar, name, stats, edit link */}
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="from-sea-sky to-sea-lavender h-32 bg-linear-to-r sm:h-36" />
+        <section className="journal-card overflow-hidden border border-slate-200">
+          {/* Banner is a strip of graph paper with a piece of tape on it */}
+          <div className="journal-grid relative h-32 border-b border-slate-200 sm:h-36">
+            <span
+              aria-hidden
+              className="bg-sea-sky/70 absolute top-4 right-10 h-5 w-24 rotate-[6deg]"
+            />
+          </div>
 
-          <div className="flex flex-col gap-4 px-6 pb-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-4 px-6 pb-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="flex items-end gap-4">
-              <div className="bg-sea-sky text-sea-teal-dark -mt-12 flex h-24 w-24 shrink-0 items-center justify-center rounded-full border-4 border-white text-4xl font-semibold shadow-sm">
+              <div className="bg-sea-sky text-sea-teal-dark relative -mt-12 flex h-24 w-24 shrink-0 items-center justify-center rounded-full border-4 border-white text-4xl font-semibold shadow-sm">
                 {displayName ? displayName.charAt(0).toUpperCase() : '?'}
               </div>
               <div className="pb-1">
-                <h1 className="pt-2 font-serif text-2xl font-semibold text-slate-900">
+                <h1 className="pt-2 font-serif text-2xl font-semibold whitespace-nowrap text-slate-900">
                   {displayName || (loading ? 'Loading...' : 'Unknown User')}
                 </h1>
                 <p className="text-sm text-slate-500">Student</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center gap-6">
               <div className="text-center">
                 <p className="text-2xl font-semibold text-slate-900">
                   {notes.length}
@@ -190,7 +196,7 @@ function Profile() {
         <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
           {/* Left column: about + subjects */}
           <aside className="space-y-6">
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <section className="journal-card border border-slate-200 p-5">
               <div className="mb-2 flex items-center">
                 <h2 className="font-serif text-lg font-semibold text-slate-900">
                   About
@@ -243,13 +249,13 @@ function Profile() {
                   {bio}
                 </p>
               ) : (
-                <p className="text-sm text-slate-400 italic">
+                <p className="font-hand text-lg text-slate-500">
                   You haven't written a bio yet.
                 </p>
               )}
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <section className="journal-card border border-slate-200 p-5">
               <div className="mb-1 flex items-center justify-between">
                 <h2 className="font-serif text-lg font-semibold text-slate-900">
                   My subjects
@@ -274,7 +280,7 @@ function Profile() {
                   return (
                     <span
                       key={s.id}
-                      className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${color.bg} ${color.text}`}
+                      className={`flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium ${color.bg} ${color.text}`}
                     >
                       {s.name}
                       <button
@@ -297,25 +303,25 @@ function Profile() {
           </aside>
 
           {/* Right column: notes */}
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="journal-card border border-slate-200 p-5">
             <h2 className="mb-4 font-serif text-lg font-semibold text-slate-900">
               My notes
             </h2>
 
             {!loading && !error && notes.length === 0 && (
-              <p className="text-sm text-slate-400">
+              <p className="font-hand text-lg text-slate-500">
                 You haven't created any notes yet.
               </p>
             )}
 
-            <div className="flex flex-wrap gap-x-3 gap-y-4">
+            <div className="grid gap-3 xl:grid-cols-2">
               {notes.map((note) => (
                 <NoteCard
                   key={note.id}
                   note={note}
                   isSaved={savedIds.has(note.id)}
                   onToggleSave={toggleSave}
-                  stretch={2}
+                  stretch={1}
                 />
               ))}
             </div>

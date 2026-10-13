@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { supabase } from '@/lib/supabase'
@@ -22,6 +22,16 @@ import { useSavedNotes } from '@/lib/useSavedNotes'
 
 import { formatNoteTime } from '@/lib/formatNoteTime'
 import { useProfile } from '@/components/auth/ProtectedRoute'
+
+function MetaRow({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="flex items-end gap-2 py-1">
+      <dt className="text-slate-500">{label}</dt>
+      <span className="mb-1 min-w-4 flex-1 border-b border-dotted border-slate-300" />
+      <dd className="text-slate-700">{children}</dd>
+    </div>
+  )
+}
 
 type FetchState =
   | { status: 'loading' }
@@ -224,15 +234,15 @@ function NotePage() {
 
             {!isExpanded && (
               // Tabs
-              <div className="flex flex-1 flex-col gap-3 bg-slate-50 px-6 py-5 shadow-md">
+              <div className="journal-grid flex flex-1 flex-col gap-3 px-6 py-5 shadow-md">
                 <div className="flex gap-4 border-b border-slate-200">
                   {(['details', 'comments', 'related'] as const).map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`cursor-pointer border-b-2 px-1 pb-1 text-sm font-medium capitalize ${
+                      className={`cursor-pointer border-b-2 px-1 pb-1 font-serif text-[15px] capitalize ${
                         activeTab === tab
-                          ? 'border-slate-800 text-slate-900'
+                          ? 'border-sea-teal text-slate-900'
                           : 'border-transparent text-slate-400 hover:text-slate-600'
                       }`}
                     >
@@ -319,41 +329,40 @@ function NotePage() {
                     </h1>
 
                     {note.subject && (
-                      <span className="w-fit rounded-full border border-slate-300 px-3 py-1 text-sm text-slate-600">
+                      <span className="w-fit rounded-sm border border-slate-300 bg-white px-3 py-1 text-sm text-slate-600">
                         {note.subject.name}
                       </span>
                     )}
 
-                    <p className="text-sm text-slate-600">
-                      Author: {note.author}
-                    </p>
-                    <p className="text-sm text-slate-600">
-                      Published: {publishedDate}
-                    </p>
-                    {editedDate && (
-                      <p className="text-sm text-slate-600">
-                        Edited: {editedDate}
-                      </p>
-                    )}
-                    {fileSize !== null && (
-                      <p className="text-sm text-slate-600">
-                        File size: {formatSize(fileSize)}
-                      </p>
-                    )}
+                    {/* Details as a table-of-contents style list with dotted leaders */}
+                    <dl className="text-sm">
+                      <MetaRow label="Author">{note.author}</MetaRow>
+                      <MetaRow label="Published">{publishedDate}</MetaRow>
+                      {editedDate && (
+                        <MetaRow label="Edited">{editedDate}</MetaRow>
+                      )}
+                      {fileSize !== null && (
+                        <MetaRow label="File size">
+                          {formatSize(fileSize)}
+                        </MetaRow>
+                      )}
+                    </dl>
 
-                    <p className="mt-2 text-slate-800">{note.description}</p>
+                    <p className="mt-2 whitespace-pre-line text-slate-800">
+                      {note.description}
+                    </p>
                   </div>
                 )}
 
                 {activeTab === 'comments' && (
-                  <p className="pt-6 text-sm text-slate-400">
-                    Comments coming soon.
+                  <p className="font-hand pt-6 text-xl text-slate-500">
+                    comments coming soon...
                   </p>
                 )}
 
                 {activeTab === 'related' && (
-                  <p className="pt-6 text-sm text-slate-400">
-                    Related notes coming soon.
+                  <p className="font-hand pt-6 text-xl text-slate-500">
+                    related notes coming soon...
                   </p>
                 )}
               </div>

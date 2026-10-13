@@ -514,9 +514,11 @@ function NoteEditPage() {
     )
 
   return (
-    <div className="flex flex-1 flex-col gap-6 bg-slate-50 p-6">
+    <div className="journal-grid flex flex-1 flex-col gap-6 p-6">
       <div className="flex items-baseline gap-2 font-serif font-bold text-slate-900">
-        <span className="text-3xl font-medium text-slate-800">Edit / </span>
+        <span className="text-3xl font-medium text-slate-800">
+          <span className="journal-highlight">Edit</span> /{' '}
+        </span>
         <span className="text-2xl font-medium text-slate-600">
           {state.note.title}
         </span>
@@ -525,9 +527,9 @@ function NoteEditPage() {
       <div className="flex flex-1 gap-6 overflow-hidden">
         {/* Left column - page list */}
         <div className="flex w-1/2 flex-col gap-2">
-          <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border-2 border-slate-200 bg-slate-100">
+          <div className="flex flex-1 flex-col overflow-hidden rounded-sm border border-slate-200 bg-slate-100 shadow-[0_1px_2px_rgb(0_0_0/0.06),0_10px_24px_-18px_rgb(0_0_0/0.35)]">
             <div
-              className={`z-10 flex shrink-0 items-center justify-between border-b-2 border-slate-200 bg-white px-4 py-3 transition-shadow ${
+              className={`z-10 flex shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 py-3 transition-shadow ${
                 pageListScrolled ? 'shadow-md' : ''
               }`}
             >
@@ -536,7 +538,9 @@ function NoteEditPage() {
                   icon={faFileLines}
                   className="text-lg font-medium text-slate-600"
                 />
-                <span className="font-semibold text-slate-800">Pages</span>
+                <span className="font-serif text-lg font-medium text-slate-800">
+                  Pages
+                </span>
               </div>
 
               {(loadingFiles || error) && (
@@ -632,29 +636,29 @@ function NoteEditPage() {
 
         {/* Right column - note metadata */}
         <div className="flex flex-1 flex-col gap-3">
-          <div className="-mb-1 text-lg text-slate-600">Title</div>
+          <div className="-mb-1 font-serif text-lg text-slate-700">Title</div>
           <div className="relative -mt-1">
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={70}
-              className="w-full rounded-lg border border-slate-300 bg-white p-2 pr-16 font-serif text-2xl font-medium text-slate-800 focus:outline-slate-300"
+              className="w-full rounded-sm border border-slate-300 bg-white p-2 pr-16 font-serif text-2xl font-medium text-slate-800 focus:outline-slate-300"
             />
             <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs text-slate-400">
               {title.length}/70
             </span>
           </div>
 
-          <div className="-mb-1 text-lg text-slate-600">Subject</div>
+          <div className="-mb-1 font-serif text-lg text-slate-700">Subject</div>
           <SubjectCombobox value={subjectId} onChange={setSubjectId} />
 
-          <div className="-mb-1 text-lg text-slate-600">Description</div>
+          <div className="-mb-1 font-serif text-lg text-slate-700">Description</div>
           <div className="relative flex-1">
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               maxLength={1000}
-              className="h-full w-full resize-none rounded-lg border border-slate-300 bg-white p-2 text-slate-800 focus:outline-slate-300"
+              className="h-full w-full resize-none rounded-sm border border-slate-300 bg-white p-2 text-slate-800 focus:outline-slate-300"
             />
             <span className="pointer-events-none absolute right-3 bottom-2 rounded bg-white/80 px-1 text-xs text-slate-400">
               {description.length}/1000

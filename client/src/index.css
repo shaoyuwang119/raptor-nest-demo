@@ -66,6 +66,80 @@
   opacity: 0.3;
 }
 
+/* Notebook page: faint graph paper plus a margin line. `local` makes the
+   paper scroll with the content instead of staying fixed behind it. */
+.journal-paper {
+  --grid-line: color-mix(in srgb, var(--color-slate-300) 40%, transparent);
+  --margin-line: rgb(236 72 153 / 0.3);
+  background-color: var(--color-slate-50);
+  background-image:
+    linear-gradient(
+      to right,
+      transparent 47px,
+      var(--margin-line) 47px,
+      var(--margin-line) 48px,
+      transparent 48px
+    ),
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size:
+    100% 24px,
+    24px 24px,
+    24px 24px;
+  background-attachment: local;
+}
+
+/* Same graph paper without the margin line, for panels that are too narrow
+   for a margin (note details, the editor) */
+.journal-grid {
+  --grid-line: color-mix(in srgb, var(--color-slate-300) 40%, transparent);
+  background-color: var(--color-slate-50);
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-attachment: local;
+}
+
+/* A sheet of paper sitting on the page: small corners, soft lifted shadow */
+.journal-card {
+  background-color: var(--color-white);
+  border-radius: 0.25rem;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.06),
+    0 10px 24px -18px rgb(0 0 0 / 0.35);
+}
+
+/* Highlighter swipe behind a word, like marking up your own notes */
+.journal-highlight {
+  background: linear-gradient(
+    transparent 55%,
+    color-mix(in srgb, var(--color-sea-sky) 90%, transparent) 55%,
+    color-mix(in srgb, var(--color-sea-sky) 90%, transparent) 90%,
+    transparent 90%
+  );
+  padding: 0 0.15em;
+}
+
+/* Punched binder holes down the right edge of the sidebar. The element
+   needs to be positioned (fixed/relative) for this to sit on its edge. */
+.journal-binding::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 3px;
+  width: 8px;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at center,
+    var(--color-slate-200) 0 3px,
+    transparent 3.5px
+  );
+  background-size: 8px 32px;
+  background-repeat: repeat-y;
+}
+
 /* Prevents elements from getting stuck mid-transition when users switch themes. */
 .theme-transitioning * {
   transition: none !important;

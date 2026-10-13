@@ -73,43 +73,62 @@ function Sidebar({ profile }: SidebarProps) {
   return (
     <div
       onMouseLeave={() => setIsHovered(false)}
-      className={`h-[calc(100vh-4rem)] shrink-0 ${canMinimize ? 'w-16' : 'w-64'}`}
+      className={`h-[calc(100vh-4rem)] shrink-0 ${canMinimize ? 'w-16' : `w-56`} transition-all duration-200`}
     >
       <aside
-        className={`fixed top-16 z-20 flex h-[calc(100vh-4rem)] shrink-0 flex-col overflow-hidden border-r border-slate-200 bg-white px-3 py-4 text-nowrap transition-all duration-200 ${
-          isMinimized ? 'w-16' : canMinimize ? 'w-64 shadow-lg' : 'w-64'
+        className={`journal-binding fixed top-16 z-20 flex h-[calc(100vh-4rem)] shrink-0 flex-col overflow-hidden border-r border-slate-200 bg-white px-3 py-5 text-nowrap transition-all duration-200 ${
+          isMinimized ? 'w-16' : canMinimize ? `w-60 shadow-lg` : `w-60`
         } `}
       >
+        {/* Name label on the notebook's cover */}
         <NavLink
           to="/profile"
+          title="Profile"
           onMouseEnter={() => {
             setIsHovered(true)
             setIsProfileHovered(true)
           }}
           onMouseLeave={() => setIsProfileHovered(false)}
-          className={({ isActive }) =>
-            `flex h-10 items-center gap-4 rounded-xl px-2 py-2 text-sm transition-colors duration-200 ${
-              isActive
-                ? 'bg-sea-teal-dark font-medium text-white'
-                : 'hover:bg-sea-lavender text-slate-600'
-            }`
-          }
+          className="group flex items-center gap-3 rounded-md px-0.5 py-1 transition-colors duration-200"
         >
-          <FontAwesomeIcon
-            size="xl"
-            icon={faCircleUser}
-            className="w-4 shrink-0"
-          />
+          {({ isActive }) => (
+            <>
+              <span
+                className={`bg-sea-sky text-sea-teal-dark flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-shadow ${
+                  isActive
+                    ? 'ring-sea-teal ring-2 ring-offset-2 ring-offset-white'
+                    : ''
+                }`}
+              >
+                {profile.name ? (
+                  profile.name.charAt(0).toUpperCase()
+                ) : (
+                  <FontAwesomeIcon icon={faCircleUser} />
+                )}
+              </span>
 
-          <div>
-            <div
-              className={`-ml-1 overflow-hidden whitespace-nowrap transition-opacity duration-100 ${
-                isMinimized ? 'opacity-0' : 'opacity-100'
-              }`}
-            >
-              Profile
-            </div>
-          </div>
+              <div
+                className={`min-w-0 overflow-hidden whitespace-nowrap transition-opacity duration-100 ${
+                  isMinimized ? 'opacity-0' : 'opacity-100'
+                }`}
+              >
+                <div className="font-hand text-base leading-none text-slate-400">
+                  this notebook belongs to
+                </div>
+                <div className="truncate font-serif text-[15px] text-slate-800">
+                  <span
+                    className={
+                      isActive
+                        ? 'journal-highlight'
+                        : 'decoration-sea-teal-light underline-offset-4 group-hover:underline'
+                    }
+                  >
+                    {profile.name || 'Profile'}
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* {isProfileHovered && !isMinimized && (
             <button
@@ -125,34 +144,51 @@ function Sidebar({ profile }: SidebarProps) {
           )} */}
         </NavLink>
 
-        <hr className="my-3 border-slate-200" />
+        <hr className="my-4 border-dashed border-slate-300" />
 
-        <nav onMouseEnter={() => setIsHovered(true)} className="space-y-1">
+        <div
+          className={`font-hand mb-1 px-2 text-lg leading-none text-slate-400 transition-opacity duration-100 ${
+            isMinimized ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
+          contents
+        </div>
+
+        <nav onMouseEnter={() => setIsHovered(true)} className="space-y-0.5">
           {sidebarItems.map((item) => (
             <NavLink
               key={item.page}
               to={item.page}
               title={item.label}
               className={({ isActive }) =>
-                `flex h-10 items-center gap-4 rounded-xl px-2 py-2 text-sm transition-colors duration-200 ${
+                // Active page gets a ribbon bookmark poking out of the left edge
+                `relative flex h-10 items-center gap-4 rounded-md px-2 py-2 transition-colors duration-200 before:absolute before:top-2 before:bottom-2 before:-left-3 before:w-1 before:rounded-r before:transition-opacity ${
                   isActive
-                    ? 'bg-sea-teal-dark font-medium text-white'
-                    : 'hover:bg-sea-lavender text-slate-600'
+                    ? 'before:bg-sea-teal text-slate-900 before:opacity-100'
+                    : 'text-slate-600 before:opacity-0 hover:bg-slate-100 hover:text-slate-900'
                 }`
               }
             >
-              <FontAwesomeIcon
-                size="lg"
-                icon={item.icon}
-                className="w-4 shrink-0"
-              />
-              <span
-                className={`overflow-hidden whitespace-nowrap transition-opacity duration-100 ${
-                  isMinimized ? 'opacity-0' : 'opacity-100'
-                }`}
-              >
-                {item.label}
-              </span>
+              {({ isActive }) => (
+                <>
+                  <FontAwesomeIcon
+                    size="lg"
+                    icon={item.icon}
+                    className={`-ml-1 w-4 shrink-0 transition-colors ${
+                      isActive ? 'text-sea-teal' : ''
+                    }`}
+                  />
+                  <span
+                    className={`overflow-hidden font-serif text-[15px] whitespace-nowrap transition-opacity duration-100 ${
+                      isMinimized ? 'opacity-0' : 'opacity-100'
+                    }`}
+                  >
+                    <span className={isActive ? 'journal-highlight' : ''}>
+                      {item.label}
+                    </span>
+                  </span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -160,7 +196,7 @@ function Sidebar({ profile }: SidebarProps) {
         <button
           onClick={toggleTheme}
           title="Toggle light/dark theme"
-          className="mt-auto flex h-10 w-full cursor-pointer items-center gap-4 rounded-xl px-2 py-2 text-sm text-slate-600 transition-colors duration-100 hover:bg-slate-100"
+          className="mt-auto flex h-10 w-full cursor-pointer items-center gap-4 border-t border-dashed border-slate-300 px-2 pt-3 pb-2 font-serif text-[15px] text-slate-600 transition-colors duration-100 hover:text-slate-900"
         >
           <FontAwesomeIcon
             size="lg"

@@ -56,8 +56,15 @@ function Saved() {
 
   return (
     <div className="flex h-full min-w-0 flex-1">
-      <div className="scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable min-w-0 flex-1 overflow-y-auto bg-slate-50 p-6">
-        <Title title="My saved" description="Notes you've starred" />
+      <div className="journal-paper scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable min-w-0 flex-1 overflow-y-auto py-8 pr-8 pl-20">
+        <Title
+          title={
+            <>
+              <span className="journal-highlight">Saved</span> for later
+            </>
+          }
+          description="Notes you've starred"
+        />
 
         {error && <ErrorDisplay message={error} />}
 
@@ -66,18 +73,16 @@ function Saved() {
             <Loading />
           </div>
         ) : notes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-16 text-center">
-            <p className="text-sm text-slate-500">
-              You haven't saved any notes yet. Star a note to save it here.
-            </p>
-          </div>
+          <p className="font-hand text-xl text-slate-500">
+            nothing saved yet — star a note to keep it here ☆
+          </p>
         ) : (
           <>
             {subjects.length > 1 && (
               <div className="mb-4 flex flex-wrap gap-2">
                 <button
                   onClick={() => setSubjectFilter(null)}
-                  className={`cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                  className={`cursor-pointer rounded-sm px-3 py-1.5 text-sm font-medium transition ${
                     subjectFilter === null
                       ? 'bg-sea-teal-dark text-white'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -92,7 +97,7 @@ function Saved() {
                     <button
                       key={subject.id}
                       onClick={() => setSubjectFilter(subject.id)}
-                      className={`cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium transition ${color.bg} ${color.text} ${
+                      className={`cursor-pointer rounded-sm px-3 py-1.5 text-sm font-medium transition ${color.bg} ${color.text} ${
                         isActive
                           ? 'ring-2 ring-current'
                           : 'opacity-70 hover:opacity-100'
