@@ -13,6 +13,7 @@ import {
   Saved,
   Search,
   Settings,
+  Bulletin,
 } from '@/pages'
 
 const router = createBrowserRouter([
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
       { path: '/notes/:id', element: <NotePage /> },
       { path: '/search', element: <Search /> },
       { path: '/settings', element: <Settings /> },
+      { path: '/bulletin', element: <Bulletin /> },
       { path: '*', element: <NotFound /> },
     ],
   },

@@ -225,7 +225,7 @@ function Home() {
             {today}
           </h1>
           <p className="font-hand text-sea-teal mt-1 w-fit -rotate-1 text-2xl">
-            {firstName ? `back at it, ${firstName}` : 'back at it'}
+            {firstName ? `Welcome, ${firstName}!` : 'welcome!'}
           </p>
         </header>
 
@@ -239,12 +239,8 @@ function Home() {
           <div className="flex flex-col gap-y-12">
             <section>
               <SectionHeader
-                title={
-                  <>
-                    <span className="journal-highlight">Last</span> time…
-                  </>
-                }
-                note="↓ where you left off"
+                title={<>Last time…</>}
+                // note="↓ where you left off"
               />
               {recentNotes.length === 0 ? (
                 <EmptyNote>notes you open will show up here</EmptyNote>
@@ -271,7 +267,7 @@ function Home() {
                 <SectionHeader
                   title={
                     <>
-                      New in <span className="journal-highlight">your</span>{' '}
+                      <span className="journal-highlight">New</span> in your{' '}
                       subjects
                     </>
                   }

@@ -11,6 +11,7 @@ import {
   faSun,
   faMoon,
   faCircleUser,
+  faThumbTack,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { supabase } from '@/lib/supabase'
@@ -30,6 +31,7 @@ const sidebarItems: SidebarItem[] = [
   { label: 'Home', page: '/', icon: faHouse },
   { label: 'Explore', page: '/explore', icon: faCompass },
   { label: 'Library', page: '/library', icon: faBookOpen },
+  { label: 'Bulletin', page: '/bulletin', icon: faThumbTack },
   { label: 'Settings', page: '/settings', icon: faGear },
 ]
 
@@ -73,11 +75,11 @@ function Sidebar({ profile }: SidebarProps) {
   return (
     <div
       onMouseLeave={() => setIsHovered(false)}
-      className={`h-[calc(100vh-4rem)] shrink-0 ${canMinimize ? 'w-16' : `w-56`} transition-all duration-200`}
+      className={`h-[calc(100vh-4rem)] shrink-0 ${canMinimize ? 'w-16' : `w-60`} transition-all duration-200`}
     >
       <aside
         className={`journal-binding fixed top-16 z-20 flex h-[calc(100vh-4rem)] shrink-0 flex-col overflow-hidden border-r border-slate-200 bg-white px-3 py-5 text-nowrap transition-all duration-200 ${
-          isMinimized ? 'w-16' : canMinimize ? `w-60 shadow-lg` : `w-60`
+          isMinimized ? 'w-16' : canMinimize ? `w-62 shadow-lg` : `w-62`
         } `}
       >
         {/* Name label on the notebook's cover */}
@@ -94,17 +96,13 @@ function Sidebar({ profile }: SidebarProps) {
           {({ isActive }) => (
             <>
               <span
-                className={`bg-sea-sky text-sea-teal-dark flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-shadow ${
+                className={`bg-sea-sky text-sea-teal-dark flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-shadow ${
                   isActive
                     ? 'ring-sea-teal ring-2 ring-offset-2 ring-offset-white'
                     : ''
                 }`}
               >
-                {profile.name ? (
-                  profile.name.charAt(0).toUpperCase()
-                ) : (
-                  <FontAwesomeIcon icon={faCircleUser} />
-                )}
+                <FontAwesomeIcon icon={faCircleUser} size="xl" />
               </span>
 
               <div
@@ -112,9 +110,6 @@ function Sidebar({ profile }: SidebarProps) {
                   isMinimized ? 'opacity-0' : 'opacity-100'
                 }`}
               >
-                <div className="font-hand text-base leading-none text-slate-400">
-                  this notebook belongs to
-                </div>
                 <div className="truncate font-serif text-[15px] text-slate-800">
                   <span
                     className={
@@ -146,13 +141,13 @@ function Sidebar({ profile }: SidebarProps) {
 
         <hr className="my-4 border-dashed border-slate-300" />
 
-        <div
+        {/* <div
           className={`font-hand mb-1 px-2 text-lg leading-none text-slate-400 transition-opacity duration-100 ${
             isMinimized ? 'opacity-0' : 'opacity-100'
           }`}
         >
           contents
-        </div>
+        </div> */}
 
         <nav onMouseEnter={() => setIsHovered(true)} className="space-y-0.5">
           {sidebarItems.map((item) => (
@@ -196,7 +191,7 @@ function Sidebar({ profile }: SidebarProps) {
         <button
           onClick={toggleTheme}
           title="Toggle light/dark theme"
-          className="mt-auto flex h-10 w-full cursor-pointer items-center gap-4 border-t border-dashed border-slate-300 px-2 pt-3 pb-2 font-serif text-[15px] text-slate-600 transition-colors duration-100 hover:text-slate-900"
+          className="6b-2 mt-auto mb-1 flex h-10 w-full cursor-pointer items-center gap-4 border-t border-dashed border-slate-300 px-2 pt-5 font-serif text-[15px] text-slate-600 transition-colors duration-100 hover:text-slate-900"
         >
           <FontAwesomeIcon
             size="lg"

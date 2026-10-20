@@ -8,7 +8,7 @@ function NotFound() {
     <div className="journal-paper flex h-full min-w-0 flex-1 flex-col justify-center py-8 pr-8 pl-20">
       <p className="font-serif text-7xl font-medium text-slate-800">404</p>
       <p className="font-hand text-sea-teal mt-2 w-fit -rotate-1 text-2xl">
-        this page got torn out of the notebook
+        Page not found!
       </p>
       <Link
         to="/"
