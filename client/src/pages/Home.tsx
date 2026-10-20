@@ -47,7 +47,7 @@ function EmptyNote({ children }: { children: ReactNode }) {
   return <p className="font-hand text-xl text-slate-500">{children}</p>
 }
 
-// Index card taped to the page, showing the note's first-page preview
+// Index card with an aesthetic tape
 function FeaturedNoteCard({ note }: { note: Note }) {
   const color = getCategoryColor(note.subject?.category)
   const isOwnNote = note.user_id === useSession()?.user.id

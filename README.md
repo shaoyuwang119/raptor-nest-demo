@@ -40,10 +40,12 @@ To-do:
 - [x] Individual note pages
 - [x] Upload and host files
 - [x] Search function
-- [ ] Organize notes in explore by topic
-- [ ] Account page
+- [x] Organize notes in explore by topic
+- [x] Account page
 - [x] User authentication
-- [ ] Polished web frontend (Don't forget CSS variables) + light/dark mode
+- [x] Polished web frontend, light/dark mode
+- [ ] Bulletin page for club ads and announcements
+- [ ] An advanced search implementation
 - [ ] Mobile frontend
 - [ ] Moderation
 
