@@ -26,18 +26,22 @@ function Post({ post, authorLabel }: PostProps) {
   const created = new Date(post.created_at)
 
   return (
-    <article className="journal-card w-full max-w-2xl overflow-hidden border border-slate-200">
+    // Capped at the viewport height minus the top header (4rem) and the page's
+    // py-8 (4rem) so a whole post, tall poster included, fits on one screen.
+    // Only the image shrinks.
+    <article className="journal-card flex max-h-[calc(100dvh-8rem)] w-full max-w-lg flex-col overflow-hidden border border-slate-200">
       {showImage && (
+        // object-contain so posters are letterboxed, never cropped
         <img
           src={post.image_url!}
           alt=""
           loading="lazy"
           onError={() => setImageFailed(true)}
-          className="aspect-[16/9] w-full border-b border-slate-200 object-cover"
+          className="min-h-0 w-full shrink border-b border-slate-200 bg-slate-100 object-contain"
         />
       )}
 
-      <div className="p-5">
+      <div className="shrink-0 p-5">
         <div className="text-sea-teal flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase">
           <FontAwesomeIcon icon={faThumbtack} className="text-[10px]" />
           Announcement
@@ -59,7 +63,7 @@ function Post({ post, authorLabel }: PostProps) {
         </p>
 
         {post.description && (
-          <p className="mt-4 border-t border-dashed border-slate-200 pt-4 text-sm leading-relaxed whitespace-pre-line text-slate-700">
+          <p className="mt-4 line-clamp-3 border-t border-dashed border-slate-200 pt-4 text-sm leading-relaxed whitespace-pre-line text-slate-700">
             {post.description}
           </p>
         )}
