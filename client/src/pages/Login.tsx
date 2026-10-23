@@ -62,7 +62,7 @@ function Login() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState(false)
 
-  usePageTitle(isSignUp ? 'Sign Up | StudyNote' : 'Log In | StudyNote')
+  usePageTitle(isSignUp ? 'Sign Up | The Raptor Nest' : 'Log In | The Raptor Nest')
 
   useEffect(() => {
     async function checkSession() {
@@ -132,12 +132,18 @@ function Login() {
     <div className="login-backdrop relative flex h-screen flex-col items-center overflow-hidden bg-slate-50 p-6 font-sans">
       <LoginDoodles />
 
-      <h1 className="text-sea-navy relative mt-26 font-serif text-4xl font-bold">
-        StudyNote
+      <img
+        src="/brand/raptor-shield.png"
+        alt="LASA Raptors"
+        className="relative mt-16 h-24 w-auto drop-shadow"
+      />
+
+      <h1 className="font-brand text-sea-navy relative mt-4 text-4xl tracking-wide">
+        The Raptor Nest
       </h1>
 
-      <p className="relative mt-4 text-slate-700">
-        Organized and accessible notes for your studies.
+      <p className="relative mt-3 text-slate-700">
+        Everything happening at LASA, all in one place.
       </p>
 
       <br></br>

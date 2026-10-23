@@ -173,7 +173,7 @@ function NoteEditPage() {
     undefined
   )
 
-  usePageTitle(`Editing ${title} | StudyNote`)
+  usePageTitle(`Editing ${title} | The Raptor Nest`)
 
   function showError(message: string) {
     setError(message)

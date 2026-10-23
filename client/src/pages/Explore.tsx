@@ -17,7 +17,7 @@ function Explore() {
   const [error, setError] = useState<string | null>(null)
   const { savedIds, toggleSave } = useSavedNotes()
 
-  usePageTitle('Explore | StudyNote')
+  usePageTitle('Explore | The Raptor Nest')
 
   useEffect(() => {
     async function loadNotes() {

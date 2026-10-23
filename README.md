@@ -1,10 +1,18 @@
-# Study Hub (MVP Phase)
+# The Raptor Nest
 
-A full-stack study sharing platform built with React, TypeScript, and Express.
+LASA's student information hub: announcements, club news, upcoming dates, a personal to-do list, and shared class notes in one place. Built by Clint Lee and Shaoyu Wang for the 2026 Congressional App Challenge (originally "Study Hub").
 
-Students can upload, browse, and share notes and study resources in one place.
+## Running it
 
----
+| Command | What it runs |
+| --- | --- |
+| `npm run demo` | **Demo build**: no login, no server, no keys. Sample LASA data lives in your browser. |
+| `npm run start` | **Real app**: Supabase login + database, plus the Express server. Needs `client/.env` and `server/.env`. |
+| `npm run build:demo` | Static demo site in `client/dist/` (for hosting the CAC demo) |
+
+Before using new hub features in the real app, run `server/sql/2026-10-raptor-nest-hub.sql` once in the Supabase SQL editor (adds bulletin categories/events/pinning and the `todos` table).
+
+School-specific settings (name, A/B schedule, post categories) live in `client/src/lib/school.ts`; logos are in `client/public/brand/`.
 
 ## Tech Stack
 

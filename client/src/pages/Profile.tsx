@@ -29,7 +29,7 @@ function Profile() {
 
   const { savedIds, toggleSave } = useSavedNotes()
 
-  usePageTitle('Profile | StudyNote')
+  usePageTitle('Profile | The Raptor Nest')
 
   useEffect(() => {
     async function fetchProfile() {
@@ -138,12 +138,25 @@ function Profile() {
       <div className="max-w-6xl space-y-6">
         {/* Header card: banner + avatar, name, stats, edit link */}
         <section className="journal-card overflow-hidden border border-slate-200">
-          {/* Banner is a strip of graph paper with a piece of tape on it */}
-          <div className="journal-grid relative h-32 border-b border-slate-200 sm:h-36">
-            <span
+          {/* LASA banner: navy with the raptor peeking in from the right */}
+          <div className="bg-lasa-navy dark:bg-lasa-navy-deep relative h-32 overflow-hidden border-b-[3px] border-lasa-silver sm:h-36">
+            <div
               aria-hidden
-              className="bg-sea-sky/70 absolute top-4 right-10 h-5 w-24 rotate-[6deg]"
+              className="absolute inset-0 opacity-[0.07]"
+              style={{
+                backgroundImage:
+                  'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
+                backgroundSize: '24px 24px',
+              }}
             />
+            <img
+              src="/brand/raptor.png"
+              alt=""
+              className="absolute -right-6 -bottom-16 h-56 w-auto opacity-25"
+            />
+            <span className="font-brand text-lasa-white/80 absolute top-5 right-44 hidden text-xl tracking-widest sm:block">
+              LASA RAPTORS
+            </span>
           </div>
 
           <div className="flex flex-col gap-4 px-6 pb-6 lg:flex-row lg:items-end lg:justify-between">
@@ -155,7 +168,7 @@ function Profile() {
                 <h1 className="pt-2 font-serif text-2xl font-semibold whitespace-nowrap text-slate-900">
                   {displayName || (loading ? 'Loading...' : 'Unknown User')}
                 </h1>
-                <p className="text-sm text-slate-500">Student</p>
+                <p className="text-sm text-slate-500">LASA Student</p>
               </div>
             </div>
 

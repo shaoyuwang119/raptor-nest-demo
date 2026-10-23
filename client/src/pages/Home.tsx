@@ -1,5 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbtack } from '@fortawesome/free-solid-svg-icons'
 
 import { NoteCard, ErrorDisplay, Loading } from '@/components'
 import { useProfile, useSession } from '@/components/auth/ProtectedRoute'
@@ -11,6 +13,12 @@ import { useSavedNotes } from '@/lib/useSavedNotes'
 import { resolveAuthors } from '@/lib/resolveAuthors'
 import { getCategoryColor } from '@/lib/categoryColors'
 import { formatNoteTime } from '@/lib/formatNoteTime'
+import { upcomingEvents, useBulletin } from '@/lib/bulletin'
+import { getRecentNoteIds } from '@/lib/recentNotes'
+import { SCHOOL, categoryStyle, getDayType } from '@/lib/school'
+import UpcomingList from '@/components/bulletin/UpcomingList'
+import TodoList from '@/components/home/TodoList'
+import type { PostType } from '@/types'
 
 function SectionHeader({
   title,
@@ -133,6 +141,88 @@ function NoteList({
   )
 }
 
+// Top of the dashboard: what the school wants you to know today
+function TodayAtSchool({ posts }: { posts: PostType[] }) {
+  const headlines = posts.slice(0, 5) // already pinned-first, newest-first
+  const coming = upcomingEvents(posts, 5)
+
+  return (
+    <section className="mb-12 grid gap-5 xl:grid-cols-5">
+      <div className="journal-card overflow-hidden border border-slate-200 xl:col-span-3">
+        <div className="bg-lasa-navy dark:bg-lasa-navy-deep flex items-center justify-between px-5 py-3">
+          <h2 className="text-lasa-white font-serif text-lg font-medium">
+            Announcements
+          </h2>
+          <Link
+            to="/bulletin"
+            className="text-lasa-silver-light hover:text-lasa-white text-sm transition-colors"
+          >
+            see all ↗
+          </Link>
+        </div>
+        {headlines.length === 0 ? (
+          <p className="font-hand px-5 py-4 text-xl text-slate-500">
+            no announcements right now
+          </p>
+        ) : (
+          <ul className="divide-y divide-dashed divide-slate-200">
+            {headlines.map((post) => {
+              const style = categoryStyle(post.category)
+              return (
+                <li key={post.id}>
+                  <Link
+                    to={`/bulletin#post-${post.id}`}
+                    className="group flex flex-col gap-0.5 px-5 py-3 transition-colors hover:bg-slate-50"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`inline-flex shrink-0 items-center rounded px-1.5 py-px text-[11px] font-semibold whitespace-nowrap ${style.badge}`}
+                      >
+                        {post.pinned && (
+                          <FontAwesomeIcon icon={faThumbtack} className="mr-1 text-[9px]" />
+                        )}
+                        {style.label}
+                      </span>
+                      <span className="decoration-sea-teal-light min-w-0 truncate font-medium text-slate-800 underline-offset-4 group-hover:underline">
+                        {post.title}
+                      </span>
+                      <span className="ml-auto shrink-0 text-xs text-slate-400">
+                        {formatNoteTime(new Date(post.created_at))}
+                      </span>
+                    </div>
+                    {post.description && (
+                      <p className="truncate text-sm text-slate-500">
+                        {post.description.replace(/\n+/g, ' · ')}
+                      </p>
+                    )}
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
+
+      <div className="journal-card overflow-hidden border border-slate-200 xl:col-span-2">
+        <div className="bg-lasa-navy dark:bg-lasa-navy-deep flex items-center justify-between px-5 py-3">
+          <h2 className="text-lasa-white font-serif text-lg font-medium">
+            Coming up
+          </h2>
+          <Link
+            to="/bulletin"
+            className="text-lasa-silver-light hover:text-lasa-white text-sm transition-colors"
+          >
+            full calendar ↗
+          </Link>
+        </div>
+        <div className="px-5 py-1">
+          <UpcomingList events={coming} empty="nothing coming up" />
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function Home() {
   const [notes, setNotes] = useState<Note[]>([])
   const [savedNotes, setSavedNotes] = useState<Note[]>([])
@@ -145,7 +235,8 @@ function Home() {
   const profile = useProfile()
   const firstName = profile.name.split(' ')[0]
 
-  usePageTitle('Home | StudyNote')
+  usePageTitle(`Home | ${SCHOOL.appName}`)
+  const { posts } = useBulletin()
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -203,14 +294,22 @@ function Home() {
     fetchSubjects()
   }, [userId])
 
-  // TODO: replace with the user's recently viewed notes (note_views)
-  const recentNotes = notes.slice(0, 3)
+  // Notes this browser opened most recently; popular notes until there are some
+  const recentIds = getRecentNoteIds()
+  const viewed = recentIds
+    .map((id) => notes.find((n) => n.id === id))
+    .filter((n): n is Note => !!n)
+  const hasHistory = viewed.length > 0
+  const popularFirst = [...notes].sort((a, b) => b.saves - a.saves)
+  // Top up with popular notes so the row is never half-empty
+  const recentNotes = [...viewed, ...popularFirst.filter((n) => !viewed.includes(n))].slice(0, 3)
   const subjectIds = new Set(subjects.map((s) => s.id))
   const newNotes = notes
     .filter((n) => subjectIds.has(n.subject_id))
     .sort((a, b) => b.created_at.localeCompare(a.created_at))
   const popularNotes = [...notes].sort((a, b) => b.saves - a.saves).slice(0, 8)
 
+  const dayType = getDayType(new Date())
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -220,14 +319,24 @@ function Home() {
   return (
     <div className="flex h-full min-w-0 flex-1">
       <div className="journal-paper min-w-0 flex-1 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-gutter-stable overflow-y-auto py-8 pr-8 pl-20">
-        <header className="mb-10">
-          <h1 className="font-serif text-4xl font-medium text-slate-800">
-            {today}
-          </h1>
+        <header className="mb-8">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="font-serif text-4xl font-medium text-slate-800">
+              {today}
+            </h1>
+            <span
+              className="bg-lasa-navy text-lasa-white rounded-full px-3 py-1 text-sm font-semibold tracking-wide shadow-sm dark:ring-1 dark:ring-slate-400"
+              title="A/B block schedule"
+            >
+              {dayType ? `${dayType} Day` : 'No school today'}
+            </span>
+          </div>
           <p className="font-hand text-sea-teal mt-1 w-fit -rotate-1 text-2xl">
             {firstName ? `Welcome, ${firstName}!` : 'welcome!'}
           </p>
         </header>
+
+        <TodayAtSchool posts={posts} />
 
         {error && <ErrorDisplay message={error} />}
 
@@ -239,8 +348,9 @@ function Home() {
           <div className="flex flex-col gap-y-12">
             <section>
               <SectionHeader
-                title={<>Last time…</>}
-                // note="↓ where you left off"
+                title={hasHistory ? 'Pick up where you left off' : 'Notes to start with'}
+                note={hasHistory ? undefined : 'shared by LASA students'}
+                to="/explore"
               />
               {recentNotes.length === 0 ? (
                 <EmptyNote>notes you open will show up here</EmptyNote>
@@ -319,7 +429,11 @@ function Home() {
         )}
       </div>
 
-      <aside className="w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white px-6 py-8">
+      <aside className="flex w-72 shrink-0 flex-col overflow-y-auto border-l border-slate-200 bg-white px-6 py-8">
+        <TodoList userId={userId} />
+
+        <hr className="my-6 border-dashed border-slate-300" />
+
         <h2 className="font-serif text-xl font-medium text-slate-800">
           My subjects
         </h2>
@@ -379,6 +493,14 @@ function Home() {
         {/* <p className="mt-3 text-sm text-slate-500">
           You haven't joined any clubs yet.
         </p> */}
+
+        {/* School spirit at the bottom of the sidebar */}
+        <div className="mt-auto flex flex-col items-center pt-10 select-none">
+          <img src="/brand/raptor.png" alt="" className="w-40" />
+          <p className="font-hand text-sea-teal mt-1 -rotate-2 text-2xl">
+            Go Raptors!
+          </p>
+        </div>
       </aside>
     </div>
   )

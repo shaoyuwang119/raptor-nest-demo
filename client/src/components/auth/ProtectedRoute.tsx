@@ -10,6 +10,7 @@ import type { Session } from '@supabase/supabase-js'
 
 import { supabase } from '@/lib/supabase'
 import { Sidebar, Header, UploadModal } from '@/components'
+import PostModal from '@/components/bulletin/PostModal'
 
 export type Profile = {
   name: string
@@ -43,6 +44,7 @@ export default function ProtectedRoute() {
     isAdmin: false,
   })
   const [showUpload, setShowUpload] = useState(false)
+  const [showPost, setShowPost] = useState(false)
 
   useEffect(() => {
     async function checkSession() {
@@ -138,7 +140,8 @@ export default function ProtectedRoute() {
     <div className="flex h-screen flex-col font-sans">
       <Header
         profileName={profile.name}
-        onCreateClick={() => setShowUpload(true)}
+        onUploadNotes={() => setShowUpload(true)}
+        onNewPost={profile.isAdmin ? () => setShowPost(true) : undefined}
       />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar profile={profile} />
@@ -148,6 +151,15 @@ export default function ProtectedRoute() {
         open={showUpload}
         onSubmit={handleUploadSubmit}
         onClose={() => setShowUpload(false)}
+      />
+      <PostModal
+        open={showPost}
+        userId={session.user.id}
+        onClose={() => setShowPost(false)}
+        onPosted={() => {
+          setShowPost(false)
+          navigate('/bulletin')
+        }}
       />
     </div>
   )
