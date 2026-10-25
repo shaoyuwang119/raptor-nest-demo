@@ -236,7 +236,7 @@ function NotePage() {
               // Tabs
               <div className="journal-grid flex flex-1 flex-col gap-3 px-6 py-5 shadow-md">
                 <div className="flex gap-4 border-b border-slate-200">
-                  {(['details', 'comments', 'related'] as const).map((tab) => (
+                  {(['details', 'related'] as const).map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
