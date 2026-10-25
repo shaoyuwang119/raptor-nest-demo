@@ -17,6 +17,7 @@ import { formatNoteTime } from '@/lib/formatNoteTime'
 import { supabase } from '@/lib/supabase'
 import { useSubjects } from '@/lib/subjects'
 import { isDemo } from '@/lib/supabase'
+import NestLogo from './NestLogo'
 
 type HeaderProps = {
   profileName: string
@@ -32,7 +33,11 @@ type NoteSuggestion = {
 
 const LAST_SEEN_KEY = 'raptor-nest-bulletin-seen'
 
-export default function Header({ profileName, onUploadNotes, onNewPost }: HeaderProps) {
+export default function Header({
+  profileName,
+  onUploadNotes,
+  onNewPost,
+}: HeaderProps) {
   const { posts } = useBulletin()
   const [showCreateMenu, setShowCreateMenu] = useState(false)
   const [showBell, setShowBell] = useState(false)
@@ -44,7 +49,9 @@ export default function Header({ profileName, onUploadNotes, onNewPost }: Header
     }
   })
   const menusRef = useRef<HTMLDivElement>(null)
-  const latest = [...posts].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 6)
+  const latest = [...posts]
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))
+    .slice(0, 6)
   const unread = latest.filter((p) => p.created_at > lastSeen).length
 
   function openBell() {
@@ -165,12 +172,8 @@ export default function Header({ profileName, onUploadNotes, onNewPost }: Header
         to={'/'}
         className="flex shrink-0 items-center gap-2.5 select-none"
       >
-        <img
-          src="/brand/raptor-shield.png"
-          alt=""
-          className="h-10 w-auto drop-shadow"
-        />
-        <span className="font-brand text-[22px] leading-none tracking-wide text-lasa-white">
+        <NestLogo className="text-lasa-white h-9" />
+        <span className="font-brand text-lasa-white text-[22px] leading-none tracking-wide">
           The Raptor Nest
         </span>
         {isDemo && (
@@ -184,7 +187,7 @@ export default function Header({ profileName, onUploadNotes, onNewPost }: Header
         <div className="relative w-full max-w-150" ref={containerRef}>
           <FontAwesomeIcon
             icon={faMagnifyingGlass}
-            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm text-lasa-white/60"
+            className="text-lasa-white/60 pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm"
           />
           <input
             value={query}
@@ -194,7 +197,7 @@ export default function Header({ profileName, onUploadNotes, onNewPost }: Header
               if (e.key === 'Enter') runSearch()
             }}
             placeholder="Search notes, classes, subjects..."
-            className="focus:ring-lasa-silver-light/50 w-full rounded-full border border-lasa-white/15 bg-lasa-white/10 py-2 pr-3 pl-9 text-sm text-lasa-white placeholder:text-lasa-white/55 focus:bg-lasa-white/15 focus:ring-2 focus:outline-none"
+            className="focus:ring-lasa-silver-light/50 border-lasa-white/15 bg-lasa-white/10 text-lasa-white placeholder:text-lasa-white/55 focus:bg-lasa-white/15 w-full rounded-full border py-2 pr-3 pl-9 text-sm focus:ring-2 focus:outline-none"
           />
 
           {showDropdown && (
@@ -265,7 +268,7 @@ export default function Header({ profileName, onUploadNotes, onNewPost }: Header
                 setShowCreateMenu((open) => !open)
                 setShowBell(false)
               }}
-              className="hover:text-lasa-navy flex h-10 cursor-pointer items-center gap-2 rounded-full border border-lasa-white/70 px-4 text-base font-medium text-lasa-white transition-all duration-200 hover:bg-lasa-white"
+              className="hover:text-lasa-navy border-lasa-white/70 text-lasa-white hover:bg-lasa-white flex h-10 cursor-pointer items-center gap-2 rounded-full border px-4 text-base font-medium transition-all duration-200"
             >
               <FontAwesomeIcon icon={faSquarePlus} />
               Create
@@ -300,7 +303,7 @@ export default function Header({ profileName, onUploadNotes, onNewPost }: Header
             <button
               title="Notifications"
               onClick={openBell}
-              className="relative flex size-10 cursor-pointer items-center justify-center rounded-full text-base text-lasa-white/70 hover:bg-lasa-white/10 hover:text-lasa-white"
+              className="text-lasa-white/70 hover:bg-lasa-white/10 hover:text-lasa-white relative flex size-10 cursor-pointer items-center justify-center rounded-full text-base"
             >
               <FontAwesomeIcon icon={faBell} />
               {unread > 0 && (
@@ -315,7 +318,9 @@ export default function Header({ profileName, onUploadNotes, onNewPost }: Header
                   Latest on the bulletin
                 </div>
                 {latest.length === 0 ? (
-                  <p className="px-4 py-3 text-sm text-slate-500">Nothing yet.</p>
+                  <p className="px-4 py-3 text-sm text-slate-500">
+                    Nothing yet.
+                  </p>
                 ) : (
                   latest.map((post) => (
                     <button
@@ -326,11 +331,16 @@ export default function Header({ profileName, onUploadNotes, onNewPost }: Header
                       }}
                       className="flex w-full cursor-pointer items-start gap-2.5 px-4 py-2.5 text-left hover:bg-slate-50"
                     >
-                      <span className={`mt-1.5 size-2 shrink-0 rounded-full ${categoryStyle(post.category).dot}`} />
+                      <span
+                        className={`mt-1.5 size-2 shrink-0 rounded-full ${categoryStyle(post.category).dot}`}
+                      />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-medium text-slate-800">{post.title}</span>
+                        <span className="block truncate text-sm font-medium text-slate-800">
+                          {post.title}
+                        </span>
                         <span className="block text-xs text-slate-500">
-                          {categoryStyle(post.category).label} · {formatNoteTime(new Date(post.created_at))}
+                          {categoryStyle(post.category).label} ·{' '}
+                          {formatNoteTime(new Date(post.created_at))}
                         </span>
                       </span>
                     </button>
@@ -353,12 +363,12 @@ export default function Header({ profileName, onUploadNotes, onNewPost }: Header
         <div className="relative" ref={profileMenuRef}>
           <div
             onClick={() => setShowProfileMenu((prev) => !prev)}
-            className="flex h-10 cursor-pointer items-center gap-3 rounded-full px-1 transition-colors duration-200 hover:bg-lasa-white/10"
+            className="hover:bg-lasa-white/10 flex h-10 cursor-pointer items-center gap-3 rounded-full px-1 transition-colors duration-200"
           >
             <div className="bg-lasa-silver-light text-lasa-navy flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
               {profileName ? profileName.charAt(0).toUpperCase() : '?'}
             </div>
-            <span className="mr-2 text-sm font-medium whitespace-nowrap text-lasa-white">
+            <span className="text-lasa-white mr-2 text-sm font-medium whitespace-nowrap">
               {profileName || 'Loading...'}
             </span>
           </div>
@@ -398,7 +408,9 @@ function MenuItem({
     >
       <FontAwesomeIcon icon={icon} className="text-sea-teal mt-1 w-4" />
       <span>
-        <span className="block text-sm font-medium text-slate-800">{title}</span>
+        <span className="block text-sm font-medium text-slate-800">
+          {title}
+        </span>
         <span className="block text-xs text-slate-500">{hint}</span>
       </span>
     </button>

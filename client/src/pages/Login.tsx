@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom'
 
 import type { Session } from '@supabase/supabase-js'
 
-import { Header, LoginDoodles } from '@/components'
+import { Header, LoginDoodles, NestLogo } from '@/components'
 import { supabase } from '@/lib/supabase'
 
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
@@ -132,11 +132,7 @@ function Login() {
     <div className="login-backdrop relative flex h-screen flex-col items-center overflow-hidden bg-slate-50 p-6 font-sans">
       <LoginDoodles />
 
-      <img
-        src="/brand/raptor-shield.png"
-        alt="LASA Raptors"
-        className="relative mt-16 h-24 w-auto drop-shadow"
-      />
+      <NestLogo className="text-sea-navy relative mt-16 h-24" />
 
       <h1 className="font-brand text-sea-navy relative mt-4 text-4xl tracking-wide">
         The Raptor Nest

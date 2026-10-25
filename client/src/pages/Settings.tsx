@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMoon, faRotateLeft, faSun } from '@fortawesome/free-solid-svg-icons'
 
-import { Title } from '@/components'
+import { NestLogo, Title } from '@/components'
 import { useProfile } from '@/components/auth/ProtectedRoute'
 import { isDemo } from '@/lib/supabase'
 import { SCHOOL } from '@/lib/school'
@@ -111,7 +111,7 @@ function Settings() {
 
         <Card title={`About ${SCHOOL.appName}`}>
           <div className="flex gap-5">
-            <img src="/brand/raptor-shield.png" alt="" className="h-20 w-auto shrink-0" />
+            <NestLogo className="text-sea-navy h-20" />
             <div className="text-sm leading-relaxed text-slate-600">
               <p>
                 {SCHOOL.appName} is the home page {SCHOOL.schoolName} lost: announcements, club news,
