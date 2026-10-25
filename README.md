@@ -1,4 +1,4 @@
-# Study Hub (MVP Phase)
+# Raptor Nest (MVP Phase)
 
 A full-stack study sharing platform built with React, TypeScript, and Express.
 
