@@ -179,7 +179,10 @@ function TodayAtSchool({ posts }: { posts: PostType[] }) {
                         className={`inline-flex shrink-0 items-center rounded px-1.5 py-px text-[11px] font-semibold whitespace-nowrap ${style.badge}`}
                       >
                         {post.pinned && (
-                          <FontAwesomeIcon icon={faThumbtack} className="mr-1 text-[9px]" />
+                          <FontAwesomeIcon
+                            icon={faThumbtack}
+                            className="mr-1 text-[9px]"
+                          />
                         )}
                         {style.label}
                       </span>
@@ -302,7 +305,10 @@ function Home() {
   const hasHistory = viewed.length > 0
   const popularFirst = [...notes].sort((a, b) => b.saves - a.saves)
   // Top up with popular notes so the row is never half-empty
-  const recentNotes = [...viewed, ...popularFirst.filter((n) => !viewed.includes(n))].slice(0, 3)
+  const recentNotes = [
+    ...viewed,
+    ...popularFirst.filter((n) => !viewed.includes(n)),
+  ].slice(0, 3)
   const subjectIds = new Set(subjects.map((s) => s.id))
   const newNotes = notes
     .filter((n) => subjectIds.has(n.subject_id))
@@ -324,12 +330,6 @@ function Home() {
             <h1 className="font-serif text-4xl font-medium text-slate-800">
               {today}
             </h1>
-            <span
-              className="bg-lasa-navy text-lasa-white rounded-full px-3 py-1 text-sm font-semibold tracking-wide shadow-sm dark:ring-1 dark:ring-slate-400"
-              title="A/B block schedule"
-            >
-              {dayType ? `${dayType} Day` : 'No school today'}
-            </span>
           </div>
           <p className="font-hand text-sea-teal mt-1 w-fit -rotate-1 text-2xl">
             {firstName ? `Welcome, ${firstName}!` : 'welcome!'}
@@ -348,7 +348,11 @@ function Home() {
           <div className="flex flex-col gap-y-12">
             <section>
               <SectionHeader
-                title={hasHistory ? 'Pick up where you left off' : 'Notes to start with'}
+                title={
+                  hasHistory
+                    ? 'Pick up where you left off'
+                    : 'Notes to start with'
+                }
                 note={hasHistory ? undefined : 'shared by LASA students'}
                 to="/explore"
               />

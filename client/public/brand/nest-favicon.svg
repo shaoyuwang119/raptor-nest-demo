@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -25 200 200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-14 -39 228 228">
   <!-- The Raptor Nest logo: a stack of books and an apple in a twig nest.
        Gaps between shapes are cut out with the mask, so it works on any background. -->
   <defs>
@@ -39,5 +39,7 @@
       <use href="#twigs" stroke="#fff" stroke-width="7" />
     </mask>
   </defs>
+  <!-- White tile so the navy logo stays visible on dark browser tabs -->
+  <rect x="-14" y="-39" width="228" height="228" rx="48" fill="#ffffff" />
   <rect width="200" height="150" fill="#0c2340" mask="url(#cut)" />
 </svg>
