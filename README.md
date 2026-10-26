@@ -52,17 +52,16 @@ To-do:
 - [x] Account page
 - [x] User authentication
 - [x] Polished web frontend, light/dark mode
-- [ ] Bulletin page for club ads and announcements
+- [x] Bulletin page for club ads and announcements
 - [ ] An advanced search implementation
 - [ ] Mobile frontend
-- [ ] Moderation
 
 ---
 
 ## Project Structure
 
 ```txt
-study-hub/
+raptor-nest-demo/
 ├── server/          # Express backend
 │   └── src/
 │       └── index.ts
@@ -85,7 +84,7 @@ Because this project runs on React, it uses the Vite development tool to build a
 ### Clone the repo
 
 ```bash
-git clone https://github.com/shaoyuwang119/study-hub
+git clone https://github.com/shaoyuwang119/raptor-nest-demo
 ```
 
 Or use the VSC git GUI.
