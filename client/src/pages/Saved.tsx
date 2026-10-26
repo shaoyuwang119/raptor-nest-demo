@@ -18,7 +18,7 @@ function Saved() {
 
   const { toggleSave } = useSavedNotes()
 
-  usePageTitle('My saved | StudyNote')
+  usePageTitle('My saved | The Raptor Nest')
 
   useEffect(() => {
     async function fetchSaved() {

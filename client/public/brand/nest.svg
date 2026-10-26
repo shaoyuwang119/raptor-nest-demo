@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150">
+  <!-- The Raptor Nest logo: a stack of books and an apple in a twig nest.
+       Gaps between shapes are cut out with the mask, so it works on any background. -->
+  <defs>
+    <g id="rim" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M28 70 Q100 50 174 68" />
+      <path d="M32 70 L14 58" />
+      <path d="M170 68 L190 54" />
+      <path d="M44 64 L30 48" />
+    </g>
+    <g id="twigs" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 76 Q100 118 186 74" />
+      <path d="M24 92 Q100 132 178 88" />
+      <path d="M30 106 Q100 146 172 102" />
+      <path d="M48 120 Q104 150 158 118" />
+      <path d="M10 88 L44 100" />
+      <path d="M192 86 L160 100" />
+      <path d="M20 116 L58 124" />
+      <path d="M184 112 L146 124" />
+      <path d="M66 140 Q100 132 136 142" />
+    </g>
+    <mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="150">
+      <use href="#rim" stroke="#fff" stroke-width="7" />
+
+      <rect x="46" y="76" width="108" height="20" rx="3" fill="#fff" stroke="#000" stroke-width="4" />
+      <path d="M140 80 L140 92" stroke="#000" stroke-width="3" />
+      <rect x="58" y="57" width="90" height="20" rx="3" fill="#fff" stroke="#000" stroke-width="4" />
+      <path d="M134 61 L134 73" stroke="#000" stroke-width="3" />
+      <g transform="rotate(-4 100 48)">
+        <rect x="52" y="38" width="96" height="20" rx="3" fill="#fff" stroke="#000" stroke-width="4" />
+        <path d="M134 42 L134 54" stroke="#000" stroke-width="3" />
+      </g>
+
+      <circle cx="100" cy="24" r="13" fill="#fff" stroke="#000" stroke-width="3" />
+      <path d="M100 12 L102 4" stroke="#fff" stroke-width="3" stroke-linecap="round" />
+      <ellipse cx="110" cy="8" rx="7" ry="3.5" fill="#fff" transform="rotate(-25 110 8)" />
+
+      <use href="#twigs" stroke="#000" stroke-width="12" />
+      <use href="#twigs" stroke="#fff" stroke-width="7" />
+    </mask>
+  </defs>
+  <rect width="200" height="150" fill="#0c2340" mask="url(#cut)" />
+</svg>

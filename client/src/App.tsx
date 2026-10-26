@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { ProtectedRoute } from '@/components'
 
 import {
@@ -15,10 +15,12 @@ import {
   Settings,
   Bulletin,
 } from '@/pages'
+import { isDemo } from '@/lib/supabase'
 
 const router = createBrowserRouter([
   // Public routes
-  { path: '/login', element: <Login /> },
+  // The demo has no accounts, so the login page just leads to the dashboard
+  { path: '/login', element: isDemo ? <Navigate to="/" replace /> : <Login /> },
 
   // Protected routes
   {

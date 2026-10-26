@@ -4,17 +4,27 @@
    theme toggle) instead of following the OS's prefers-color-scheme. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* "Gentle Sea Breeze" light theme palette - swap these to re-theme the app */
+/* LASA Raptors palette: navy + silver, taken from the school logos.
+   The sea-* names are kept so existing components pick up the new colors. */
 @theme {
-  --color-sea-navy: #022b3a;
-  --color-sea-teal: #1f7a8c;
-  --color-sea-teal-dark: #175e6b;
-  --color-sea-teal-light: #7fb0bc;
-  --color-sea-sky: #bfdbf7;
-  --color-sea-lavender: #e1e5f2;
+  /* Brand colors that stay the same in light and dark mode */
+  --color-lasa-navy: #0c2340;
+  --color-lasa-navy-deep: #081a31;
+  --color-lasa-silver: #98999b;
+  --color-lasa-silver-light: #c7c8c8;
+  --color-lasa-white: #ffffff; /* real white, even in dark mode */
+
+  --color-sea-navy: #0c2340;
+  --color-sea-teal: #1b3a66;
+  --color-sea-teal-dark: #0c2340;
+  --color-sea-teal-light: #98999b;
+  --color-sea-sky: #d5dbe5;
+  --color-sea-lavender: #e4e7ec;
 
   --font-sans: 'Public Sans', ui-sans-serif, system-ui, sans-serif;
   --font-serif: 'Fraunces', ui-serif, Georgia, serif;
+  /* Collegiate slab lettering, like the LASA RAPTORS wordmark */
+  --font-brand: 'Graduate', 'Fraunces', ui-serif, Georgia, serif;
 
   /* Handwriting, for the login doodles. Caveat has no glyphs for the math
      symbols (∑ ∫ √ π θ ∞ ≈ ±), so Fraunces is chained behind it to catch
@@ -22,28 +32,29 @@
   --font-hand: 'Caveat', 'Fraunces', ui-serif, Georgia, serif;
 }
 
-/* Inverted lightness for "Gentle Sea Breeze" dark theme*/
+/* Dark mode: deep LASA navy surfaces with silver accents */
 .dark {
-  --color-sea-navy: #eaf6fb;
-  --color-sea-teal: #3fb6cc;
-  --color-sea-teal-dark: #6cd0e0;
-  --color-sea-teal-light: #2f5560;
-  --color-sea-sky: #163a46;
-  --color-sea-lavender: #22314a;
+  color-scheme: dark; /* dark date pickers, scrollbars */
+  --color-sea-navy: #e8ebf0;
+  --color-sea-teal: #a9bfe0;
+  --color-sea-teal-dark: #c9d6ea;
+  --color-sea-teal-light: #4a5a72;
+  --color-sea-sky: #24395a;
+  --color-sea-lavender: #1f3050;
 
-  --color-white: #0f2933;
+  --color-white: #0f2340;
 
-  --color-slate-50: #0a1e26;
-  --color-slate-100: #123039;
-  --color-slate-200: #1c3f49;
-  --color-slate-300: #2a505a;
-  --color-slate-400: #5c8290;
-  --color-slate-500: #82a3ae;
-  --color-slate-600: #a9c3cb;
-  --color-slate-700: #c3d7dc;
-  --color-slate-800: #ddecef;
-  --color-slate-900: #eef6f8;
-  --color-slate-950: #f7fbfc;
+  --color-slate-50: #0a1a30;
+  --color-slate-100: #132a4a;
+  --color-slate-200: #1d3556;
+  --color-slate-300: #2c4466;
+  --color-slate-400: #6d7c92;
+  --color-slate-500: #919daf;
+  --color-slate-600: #b2bac6;
+  --color-slate-700: #c9cfd8;
+  --color-slate-800: #e1e5eb;
+  --color-slate-900: #f0f2f5;
+  --color-slate-950: #f8f9fb;
 }
 
 @layer base {
@@ -70,7 +81,7 @@
    paper scroll with the content instead of staying fixed behind it. */
 .journal-paper {
   --grid-line: color-mix(in srgb, var(--color-slate-300) 40%, transparent);
-  --margin-line: rgb(236 72 153 / 0.3);
+  --margin-line: color-mix(in srgb, var(--color-lasa-silver) 55%, transparent);
   background-color: var(--color-slate-50);
   background-image:
     linear-gradient(
@@ -143,4 +154,18 @@
 /* Prevents elements from getting stuck mid-transition when users switch themes. */
 .theme-transitioning * {
   transition: none !important;
+}
+
+/* Brief highlight on a bulletin post you jumped to from the Home page */
+.flash-highlight {
+  animation: flash-highlight 1.6s ease-out;
+}
+@keyframes flash-highlight {
+  0%,
+  30% {
+    box-shadow: 0 0 0 4px var(--color-lasa-silver);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
 }

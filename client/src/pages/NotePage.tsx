@@ -1,7 +1,8 @@
-﻿import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { supabase } from '@/lib/supabase'
+import { rememberNote } from '@/lib/recentNotes'
 import type { Note } from '@/types'
 import { formatSize } from '@/lib/formatFileSize'
 
@@ -62,8 +63,8 @@ function NotePage() {
 
   usePageTitle(
     state.status === 'ready'
-      ? `${state.note.title} | StudyNote`
-      : 'Loading... | StudyNote'
+      ? `${state.note.title} | The Raptor Nest`
+      : 'Loading... | The Raptor Nest'
   )
 
   function handleReport() {
@@ -171,6 +172,7 @@ function NotePage() {
         status: 'ready',
         note: { ...data, author: profile?.display_name ?? 'Unknown User' },
       })
+      rememberNote(data.id)
     }
 
     fetchNote()

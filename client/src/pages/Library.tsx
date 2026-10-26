@@ -15,7 +15,7 @@ function Library() {
   const subjects = useSubjects()
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
-  usePageTitle('Library | StudyNote')
+  usePageTitle('Library | The Raptor Nest')
 
   function toggleCategory(category: string) {
     setExpanded((prev) => {

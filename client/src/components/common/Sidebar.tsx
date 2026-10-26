@@ -1,5 +1,5 @@
-﻿import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { useState } from 'react'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBookBookmark,
@@ -29,9 +29,9 @@ type SidebarProps = {
 
 const sidebarItems: SidebarItem[] = [
   { label: 'Home', page: '/', icon: faHouse },
-  { label: 'Explore', page: '/explore', icon: faCompass },
-  { label: 'Library', page: '/library', icon: faBookOpen },
   { label: 'Bulletin', page: '/bulletin', icon: faThumbTack },
+  { label: 'Explore notes', page: '/explore', icon: faCompass },
+  { label: 'Library', page: '/library', icon: faBookOpen },
   { label: 'Settings', page: '/settings', icon: faGear },
 ]
 
@@ -47,6 +47,13 @@ function Sidebar({ profile }: SidebarProps) {
   const [isDarkMode, setIsDarkMode] = useState(() =>
     document.documentElement.classList.contains('dark')
   )
+
+  // Settings can switch the theme too; keep this toggle in sync
+  useEffect(() => {
+    const sync = () => setIsDarkMode(document.documentElement.classList.contains('dark'))
+    window.addEventListener('theme-changed', sync)
+    return () => window.removeEventListener('theme-changed', sync)
+  }, [])
 
   function toggleTheme() {
     const root = document.documentElement

@@ -18,7 +18,7 @@ function Search() {
   const [error, setError] = useState<string | null>(null)
   const { savedIds, toggleSave } = useSavedNotes()
 
-  usePageTitle(q ? `"${q}" | Search | StudyNote` : 'Search | StudyNote')
+  usePageTitle(q ? `"${q}" | Search | The Raptor Nest` : 'Search | The Raptor Nest')
 
   useEffect(() => {
     async function runSearch() {
